@@ -416,10 +416,9 @@ export default function CommonFunction(): CommonFunctionReturn {
     if(document.documentElement.scrollTop >= gnb?.clientHeight){
       menu.style.position = 'fixed';
       if(!gb.isScroll){
-        gsap.fromTo(menu, {
-          y:'-120%'
-        }, {
-          y:0,
+        gsap.set(menu, {yPercent:-120})
+        gsap.to(menu, {
+          yPercent:0,
           duration:0.2,
           onComplete: () => {
             gb.isScroll = true;
