@@ -100,7 +100,8 @@ const projects = ref<any[]>([])
 const filteredProjects = ref<any[]>([])
 const isMob = common.isMob()
 let lastScrollTop = window.scrollY
-,isScroll = false
+let isScroll = false
+let scrollTimeout: number | null = null
 
 let pollingInterval: number | undefined = undefined;
 let lastFetchedData: any = null;
@@ -172,6 +173,49 @@ const scrollDelta = () => {
   return deltaY;
 }
 
+const handleScroll = () => {
+  const scrollDeltaY = scrollDelta();
+  const root = document.documentElement;
+
+  if (root.scrollHeight > root.scrollTop + root.clientHeight) {
+    if (!isScroll) {
+      if (scrollDeltaY > 0) {
+        isScroll = true;
+        gsap.to('#footer', {
+          yPercent: 100,
+          duration: 0.2,
+          onComplete() {
+            isScroll = false;
+          }
+        });
+      } else {
+        isScroll = true;
+        gsap.to('#footer', {
+          yPercent: 0,
+          duration: 0.2,
+          onComplete() {
+            isScroll = false;
+          }
+        });
+      }
+    }
+  } else {
+    gsap.to('#footer', {
+      yPercent: 0,
+      duration: 0.2
+    });
+  }
+};
+
+// throttledScroll을 변수로 선언
+const throttledScroll = () => {
+  if (scrollTimeout !== null) return;
+  scrollTimeout = window.setTimeout(() => {
+    handleScroll();
+    scrollTimeout = null;
+  }, 100); // 100ms마다 한 번만 실행
+};
+
 onMounted(async () => {
   try {
     const response = await axiosListUp()
@@ -207,43 +251,17 @@ onMounted(async () => {
     }
   }, 5000); // 5초마다
 
-  window.addEventListener('scroll', function(){
-      const scrollDeltaY = scrollDelta();
-      const root = document.documentElement;
-
-      if(root.scrollHeight > root.scrollTop + root.clientHeight){
-        if(!isScroll){
-          if(scrollDeltaY > 0){
-            isScroll = true;
-            gsap.to('#footer', {
-              yPercent:100,
-              duration:0.2,
-              onComplete(){
-                isScroll = false;
-              }
-            })
-          }else {
-            isScroll = true;
-            gsap.to('#footer', {
-              yPercent:0,
-              duration:0.2,
-              onComplete(){
-                isScroll = false;
-              }
-            })
-          }
-        }
-      }else {
-        gsap.to('#footer', {
-          yPercent:0,
-          duration:0.2
-        });
-      }
-  });
+  window.addEventListener('scroll', throttledScroll);
 })
 
 onBeforeUnmount(() => {
   if (pollingInterval) clearInterval(pollingInterval);
+
+  window.removeEventListener('scroll', throttledScroll);
+  if (scrollTimeout !== null) {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = null;
+  }
 });
 
 watch(selectedCategory, () => {
