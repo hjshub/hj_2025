@@ -160,7 +160,7 @@ const introMotion = () => {
   const scene1 = gsap.timeline({
     onStart: () => { currentSceneIndex.value = 0; },
     onComplete: () => {
-      // if(autoPlay.value) scene2.play();
+      if(autoPlay.value) scene2.play();
     }
   });
   const scene2 = gsap.timeline({ 
