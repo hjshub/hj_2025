@@ -251,10 +251,10 @@ const introMotion = () => {
   })
   .to('.intro-1 .step-2', {
     backgroundPositionX:'100VW',
-    duration:2,
+    duration:1.8,
     repeat:1,
     yoyo:true
-  },'+=1.2')
+  },'+=1')
   
   scene2
   .to('.intro-1', {

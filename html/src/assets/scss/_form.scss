@@ -312,6 +312,10 @@ button {
     @apply flex items-center justify-center rounded-full pr-10 pl-10 break-keep whitespace-nowrap text-white bg-indigo-200 dark:text-black dark:bg-[rgba(0,0,0,0.2)];
     height:4rem;
 
+    input {
+      @apply sr-only;
+    }
+
     @include mx.bp(561px){
       @apply pr-5 pl-5;
     }

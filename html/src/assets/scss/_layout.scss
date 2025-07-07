@@ -212,7 +212,7 @@ textarea {
   }
 
   @include mx.bp(640px) {
-    @apply w-[85vw] h-[85vw] top-[45%];
+    @apply w-[85vw] h-[85vw] top-[50%];
 
     &.intro-box2 {
       @apply w-[75vw] h-[75vw];
@@ -234,12 +234,12 @@ textarea {
         }
         
         i {
-          font-weight:600;
+          // font-weight:600;
         }
       }
   
       span {
-        @apply relative text-purple bg-purple bg-gradient-to-r from-[var(--purple)] via-[var(--black)] to-[transparent];
+        @apply relative text-purple bg-purple bg-gradient-to-r from-[var(--purple)] via-[var(--black)] to-[transparent] w-full text-center;
         perspective: 400px;
         -webkit-perspective: 400px;
         background-clip: text;
@@ -251,7 +251,7 @@ textarea {
 
         i {
           @apply opacity-0 text-[3.4rem];
-          font-weight: 400;
+          font-weight: 600;
           font-style: italic;
 
           @include mx.bp(640px) {
@@ -712,13 +712,7 @@ main:after {
 /*main*/
 main {
   @apply relative bg-white w-[100%];
-  min-height:calc(100vh - 22rem);
-
-  @include mx.bp(821px) {
-    padding-top: 0;
-    min-height:calc(100svh - 17rem);
-  }
-
+  
   section {
     position: relative;
     min-height: 100%;
@@ -732,8 +726,12 @@ main {
     }
 
     &.section-01 {
-      @apply bg-white fixed top-0 left-0 p-0;
-      @include mx.transform(translate(0, 0) !important);
+      @apply bg-white;
+      min-height:calc(100svh - 22rem);
+
+      @include mx.bp(821px) {
+        min-height:calc(100svh - 17rem);
+      }
     }
 
     &.section-02 {

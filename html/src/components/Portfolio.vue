@@ -99,6 +99,7 @@ const selectedCategory = ref('')
 const projects = ref<any[]>([])
 const filteredProjects = ref<any[]>([])
 const isMob = common.isMob()
+let lastScrollTop = window.scrollY;
 
 let pollingInterval: number | undefined = undefined;
 let lastFetchedData: any = null;
@@ -162,6 +163,14 @@ const axiosListUp = async () => {
   }
 };
 
+const scrollDelta = () => {
+  const currentScrollTop = window.scrollY;
+  const deltaY = currentScrollTop - lastScrollTop;
+  lastScrollTop = currentScrollTop;
+
+  return deltaY;
+}
+
 onMounted(async () => {
   try {
     const response = await axiosListUp()
@@ -196,6 +205,30 @@ onMounted(async () => {
       // 무시: 폴링 중 에러는 치명적이지 않음
     }
   }, 5000); // 5초마다
+
+  window.addEventListener('scroll', function(){
+      const scrollDeltaY = scrollDelta();
+      const root = document.documentElement;
+
+      if(root.scrollHeight > root.scrollTop + root.clientHeight){
+        if(scrollDeltaY > 0){
+          gsap.to('#footer', {
+            yPercent:100,
+            duration:0.2
+          })
+        }else {
+          gsap.to('#footer', {
+            yPercent:0,
+            duration:0.2
+          })
+        }
+      }else {
+        gsap.to('#footer', {
+          yPercent:0,
+          duration:0.2
+        });
+      }
+  });
 })
 
 onBeforeUnmount(() => {

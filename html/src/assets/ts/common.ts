@@ -776,7 +776,7 @@ export default function CommonFunction(): CommonFunctionReturn {
     for(let i = 0; i <= year; i++){
       (function(n){
         setTimeout(function(){
-          countYear.innerHTML = n.toFixed();
+          if(countYear) countYear.innerHTML = n.toFixed();
         }, n*70);
       })(i);
     }
@@ -861,8 +861,8 @@ window.addEventListener('orientationchange', () => {
 const handleScroll = throttle(() => {
   try {
     Performance.start('scroll-handler');
-    
     const commonFunc = gb.CommonFunction();
+
     commonFunc.setGnb();
     commonFunc.animate();
       
