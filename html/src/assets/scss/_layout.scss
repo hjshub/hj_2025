@@ -723,8 +723,7 @@ main {
 
     @include mx.bp(821px) {
       min-height:calc(100dvh - 17rem);
-      min-height:calc(100svh - 11rem);
-      min-height:calc(100lvh - 17rem);
+      min-height:calc(100lvh - 11rem);
     }
 
     @include mx.bp(561px) {
