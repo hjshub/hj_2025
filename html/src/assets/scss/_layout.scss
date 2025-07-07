@@ -194,7 +194,7 @@ textarea {
 
   &.r-tit {
     i {
-      @apply font-score-extrabold text-[3.8rem] uppercase text-black;
+      @apply text-[3.8rem] uppercase text-black;
       @include mx.transform(translate(0px, -50%));
       @include mx.bp(640px) {
         font-size: 2.8rem;

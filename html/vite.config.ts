@@ -43,7 +43,7 @@ export default defineConfig({
       }
     })
   ],
-  base: './',
+  base: '/hj_2025/',
   resolve: {
     alias: {
       '@': resolve(__dirname, './src')

@@ -11,7 +11,7 @@
       <div class="menu">
         <ul class="flex--wrap edge w-[100%]">
           <li v-for="(item, index) in menuItems" :key="index">
-            <a class="anchor" :class="currentPath == item.href ? 'active' : ''" :href="item.href" lang="en">{{ item.text }}</a>
+            <router-link class="anchor" :class="route.path == item.href ? 'active' : ''" :to="item.href" lang="en">{{ item.text }}</router-link>
           </li>
         </ul>
         <div class="scrollGage" :style="{ width: scrollProgress + '%' }"></div>
@@ -22,9 +22,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, defineProps, defineEmits } from 'vue'
+import { useRoute } from 'vue-router'
 import CommonFunction from '../assets/ts/common'
 
 const common = CommonFunction()
+const route = useRoute()
 
 const scrollProgress = ref(0)
 
@@ -36,7 +38,7 @@ const menuItems = [
   // { href: '/contact', text: 'contact' }
 ]
 
-const currentPath : string | null = window.location.pathname;
+// const currentPath : string | null = window.location.pathname;
 
 const props = defineProps({
   isDarkMode : { type: Boolean, default: false },

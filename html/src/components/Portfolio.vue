@@ -54,11 +54,11 @@
             <div class="thumbNail" :name="project.name">
               <span v-if="false" class="symbol" 
               :class = "Array.isArray(project.logo) ? project.logo[0] : project.logo" 
-              :style="Array.isArray(project.logo) ? {backgroundImage:`url(/images/symbol/${project.logo[0]}.${project.logo[1]})`} : ''">
+              :style="Array.isArray(project.logo) ? {backgroundImage:`url(./images/symbol/${project.logo[0]}.${project.logo[1]})`} : ''">
               </span>
               <span>
-                <img v-if="project.imgSrc" :src="'/images/thumbnail/'+ project.imgSrc" :alt="project.title" />
-                <img v-else :src="'/images/thumbnail/no-image.jpg'" :alt="project.title" />
+                <img v-if="project.imgSrc" :src="'./images/thumbnail/'+ project.imgSrc" :alt="project.title" />
+                <img v-else :src="'./images/thumbnail/no-image.jpg'" :alt="project.title" />
               </span>
             </div>
             <dl>
@@ -153,7 +153,8 @@ const copyProjectUrl = (e: Event, url: string) => {
 
 const axiosListUp = async () => {
   try {
-    const response = await axios.get('/data/list.json');
+    // const response = await axios.get('./data/list.json');
+    const response = await axios.get(`${import.meta.env.BASE_URL}data/list.json`);
     return response.data;
   } catch (error) {
     common.getErrorHandler().catch(error instanceof Error ? error : new Error(String(error)));
