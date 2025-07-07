@@ -99,7 +99,8 @@ const selectedCategory = ref('')
 const projects = ref<any[]>([])
 const filteredProjects = ref<any[]>([])
 const isMob = common.isMob()
-let lastScrollTop = window.scrollY;
+let lastScrollTop = window.scrollY
+,isScroll = false
 
 let pollingInterval: number | undefined = undefined;
 let lastFetchedData: any = null;
@@ -211,16 +212,26 @@ onMounted(async () => {
       const root = document.documentElement;
 
       if(root.scrollHeight > root.scrollTop + root.clientHeight){
-        if(scrollDeltaY > 0){
-          gsap.to('#footer', {
-            yPercent:100,
-            duration:0.2
-          })
-        }else {
-          gsap.to('#footer', {
-            yPercent:0,
-            duration:0.2
-          })
+        if(!isScroll){
+          if(scrollDeltaY > 0){
+            isScroll = true;
+            gsap.to('#footer', {
+              yPercent:100,
+              duration:0.2,
+              onComplete(){
+                isScroll = false;
+              }
+            })
+          }else {
+            isScroll = true;
+            gsap.to('#footer', {
+              yPercent:0,
+              duration:0.2,
+              onComplete(){
+                isScroll = false;
+              }
+            })
+          }
         }
       }else {
         gsap.to('#footer', {
