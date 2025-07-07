@@ -1,0 +1,120 @@
+@use 'mixin' as mx;
+@use 'variable' as vars;
+
+/*motion*/
+.animate {
+  @apply duration-800 transition-[opacity,transform] opacity-0 ease-[cubic-bezier(0.25,0.1,0.25,1)];
+
+  &.fast {
+    @apply duration-400;
+  }
+
+  &.animation--start {
+    @apply opacity-100 translate-x-0 translate-y-0;
+  }
+
+  &.zoomIn {
+    @apply opacity-100 pointer-events-auto scale-100 -translate-x-1/2 -translate-y-1/2;
+  }
+}
+
+/* 딜레이 클래스들을 Tailwind 방식으로 변경 */
+.animate-delay-01 { @apply delay-[100ms]; }
+.animate-delay-02 { @apply delay-[200ms]; }
+.animate-delay-03 { @apply delay-[300ms]; }
+.animate-delay-04 { @apply delay-[400ms]; }
+.animate-delay-05 { @apply delay-[500ms]; }
+.animate-delay-06 { @apply delay-[600ms]; }
+.animate-delay-07 { @apply delay-[700ms]; }
+.animate-delay-08 { @apply delay-[800ms]; }
+.animate-delay-09 { @apply delay-[900ms]; }
+
+/* 기본 애니메이션 클래스들 */
+.fadeInUp {
+  @apply translate-y-[30%];
+}
+
+.fadeInDown {
+  @apply -translate-y-[30%];
+}
+
+.fadeInRight {
+  @apply -translate-x-[60%];
+}
+
+.fadeInLeft {
+  @apply translate-x-[60%];
+}
+
+.zoomOut {
+  @apply origin-top-left;
+  transform: scale(0.66) translate(-50%, -50%);
+}
+
+/* Tailwind 애니메이션 클래스들 */
+.is_animated {
+  @apply animate-[1s_both];
+}
+
+.animate__fade_In_Up {
+  @apply animate-fadeInUp;
+}
+
+.animate__fade_In_Down {
+  @apply animate-fadeInDown;
+}
+
+.animate__zoomIn {
+  @apply animate-zoomIn;
+}
+
+.animate__tick {
+  @apply animate-tick;
+}
+
+/* 키프레임 애니메이션 */
+@keyframes scroll {
+  0%, 100% {
+    @apply opacity-100;
+  }
+  50% {
+    @apply opacity-0;
+  }
+}
+
+@keyframes jingle {
+  0% {
+    @apply ease-[cubic-bezier(0.146,0.2111,0.5902,1.3204)] rotate-0;
+  }
+  11% {
+    @apply ease-[cubic-bezier(0.1079,0.1992,-0.6462,0.828)];
+    transform: rotate(7.61deg);
+  }
+  23% {
+    @apply ease-[cubic-bezier(0.0504,0.0951,0.0163,0.9677)];
+    transform: rotate(-5.79deg);
+  }
+  36% {
+    @apply ease-[cubic-bezier(0.0475,0.0921,0.3134,1.0455)];
+    transform: rotate(3.35deg);
+  }
+  49% {
+    @apply ease-[cubic-bezier(0.0789,0.1565,0.3413,1.0972)];
+    transform: rotate(-1.93deg);
+  }
+  62% {
+    @apply ease-[cubic-bezier(0.141,0.2885,0.406,1.1519)];
+    transform: rotate(1.12deg);
+  }
+  75% {
+    @apply ease-[cubic-bezier(0.226,0.4698,0.5031,1.1722)];
+    transform: rotate(-0.64deg);
+  }
+  88% {
+    @apply ease-[cubic-bezier(0.3121,0.5521,0.5655,0.8997)];
+    transform: rotate(0.37deg);
+  }
+  100% {
+    transform: rotate(-0.28deg);
+  }
+}

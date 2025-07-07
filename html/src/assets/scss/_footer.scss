@@ -1,0 +1,21 @@
+@use 'mixin' as mx;
+@use 'variable' as vars;
+
+/**
+ * ==============================+
+ * footer
+ * ==============================+
+ */
+footer {
+  @apply bg-black text-white relative z-10 h-[8rem] text-[1.8rem];
+  @apply flex;
+  @apply items-center;
+
+  a {
+    @apply text-[2.5rem];
+  }
+
+  @include mx.bp(821px) {
+    @apply h-[6rem];
+  }
+}

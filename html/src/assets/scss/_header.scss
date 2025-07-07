@@ -1,0 +1,105 @@
+@use 'mixin' as mx;
+@use 'variable' as vars;
+
+/**
+ * ==============================+
+ * header
+ * ==============================+
+ */
+
+#gnb {
+  @apply w-full bg-white relative z-20;
+
+  > div{
+    &:first-of-type {
+      @apply h-[7rem] border-b border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
+
+      @include mx.bp(821px) {
+        @apply h-[6rem];
+      }
+    }
+
+    &:nth-of-type(2){
+      @apply relative h-[7rem];
+
+      @include mx.bp(821px) {
+        @apply h-[5rem];
+      }
+    }
+  }
+
+  .menu {
+    @apply absolute top-0 z-[999] w-full bg-white;
+
+    ul {
+      @apply w-full h-[7rem] border-b-[3px] border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
+
+      @include mx.bp(821px) {
+        @apply h-[5rem];
+      }
+
+      li {
+        @apply flex w-full h-full;
+
+        a {
+          @apply flex items-center justify-center w-full h-full text-[1.6rem] uppercase text-gray;
+
+          &.active {
+            @apply text-purple;
+          }
+        }
+
+        & ~ li {
+          @apply border-l border-solid border-[rgba(162,162,162,0.1)];
+        }
+      }
+    }
+  }
+
+
+  .scrollGage {
+    @apply bg-black h-[3px] w-0 absolute bottom-0;
+    @include mx.transition(all ease-out 0.2s);
+  }
+
+  span {
+    @apply uppercase text-[1.8rem];
+
+    .r2 {
+      @apply absolute opacity-0;
+      left: 60px;
+      @include mx.transform(translateX(-100%));
+
+      @include mx.bp(1200px) {
+        left: 30px;
+      }
+      @include mx.bp(561px) {
+        left: 15px;
+      }
+    }
+  }
+  .button-toggle {
+    @apply w-[50px] h-[30px] rounded-full bg-softGray relative;
+    &:active:enabled {
+      @apply transform-none;
+    }
+
+    @at-root {
+      .dark {
+        .button-toggle {
+          &:before {
+            @apply translate-x-[20px];
+          }
+        }
+      }
+    }
+    
+    &:before {
+      @apply w-[20px] h-[20px] bg-purple rounded-full absolute top-1/2 left-[5px] -translate-y-1/2;
+      transition-property: transform;
+      transition-duration: 0.2s;
+      transition-timing-function: ease-out;
+      content:'';
+    }
+  }
+}

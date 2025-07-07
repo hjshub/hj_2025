@@ -1,0 +1,127 @@
+@use 'mixin' as mx;
+@use 'variable' as vars;
+
+// Default variables
+$font_size: 1.6rem !default;
+$font_size_small: 12px !default;
+
+$input_border_radius: 7px !default;
+$input_height: 40px !default;
+$input_height_small: 36px !default;
+$dropdown_padding: 18px !default;
+
+$gray: vars.$gray !default;
+$gray_light: #e8e8e8 !default;
+$gray_lighter: #f6f6f6 !default;
+$arrow_color: $gray !default;
+
+// Style the dropdown
+.nice-select {
+  @apply bg-white box-border clear-both cursor-pointer block float-left font-inherit font-normal relative text-left select-none whitespace-nowrap text-[0] min-w-[150px] w-auto h-[40px] leading-[38px] rounded-[7px] border border-solid border-gray-400 outline-none pl-[18px] pr-[48px] transition-all duration-200 ease-in-out;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  .current {
+    @apply inline-block leading-none align-middle text-[1.6rem];
+  }
+
+  &:active,
+  &:focus,
+  &:hover {
+    @apply border-black border-opacity-5 shadow-[0_0_3px_1px_rgba(0,0,0,0.3)];
+  }
+
+  // Arrow
+  &:after {
+    @apply absolute top-[17px] right-[11px] w-[10px] h-[10px] border-t-2 border-r-2 border-current -rotate-45;
+    content: '';
+
+    @include mx.bp(821px) {
+      @apply w-[12px] h-[12px];
+    }
+  }
+
+  &.open {
+    @extend :active;
+    @apply z-[11] rounded-b-none;
+
+    &:after {
+      @apply rotate-[135deg];
+
+      @include mx.bp(821px) {
+        @apply w-[12px] h-[12px];
+      }
+    }
+
+    .list {
+      @apply opacity-100 pointer-events-auto;
+    }
+  }
+
+  &.disabled {
+    @apply border-[#ebebeb] text-[#999] pointer-events-none;
+    &:after {
+      @apply border-[#b3b3b3];
+    }
+  }
+
+  // Modifiers
+  &.wide {
+    @apply w-full;
+  }
+
+  &.right {
+    @apply float-right;
+    .list {
+      @apply left-auto right-0;
+    }
+  }
+
+  &.small {
+    @apply text-xs h-[36px] leading-[34px];
+    &:after {
+      @apply h-1 w-1;
+    }
+    .option {
+      @apply leading-[34px] min-h-[34px];
+    }
+  }
+
+  // List and options
+  .list {
+    @apply bg-white box-border text-base opacity-0 overflow-hidden py-[10px] px-0 pointer-events-none absolute top-full -left-[1px] -right-[1px] z-[9] rounded-b-[7px] border-[1px] border-solid border-black border-opacity-5 shadow-[0_0_3px_1px_rgba(0,0,0,0.3)] origin-[50%_0] transition-all duration-200 ease-[cubic-bezier(0.5,0,0,1.25)];
+
+    &:hover .option:not(:hover) {
+      @apply bg-transparent !important;
+    }
+  }
+
+  .option {
+    @apply cursor-pointer font-normal list-none outline-none text-left transition-all duration-200 text-gray-600 leading-[38px] min-h-[38px] pl-[18px] pr-[29px];
+
+    &:hover,
+    &.focus,
+    &.selected.focus {
+      @apply text-black;
+    }
+
+    &.selected {
+      @apply font-semibold;
+    }
+
+    &.disabled {
+      @apply hidden bg-transparent text-gray-600 cursor-default;
+    }
+  }
+}
+
+// Use display instead of opacity for IE <= 10
+.no-csspointerevents .nice-select {
+  .list {
+    @apply hidden;
+  }
+  &.open {
+    .list {
+      @apply block;
+    }
+  }
+}

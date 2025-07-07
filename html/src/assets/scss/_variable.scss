@@ -1,0 +1,52 @@
+// Colors
+$black: var(--black);
+$black2: var(--black2);
+$white: var(--white);
+$softGray: var(--softGray);
+$gray: var(--gray);
+$gray2: #666666;
+$gray3: #dedede;
+$gray4: #c1c3cd;
+$gray5: #d1d1d1;
+$gray6: #99c6ff;
+$gray7: #333333;
+$blueGray: #dee4ff;
+$blueGray2: #dee4ff;
+$skyblue: #7fe3ff;
+$skyblue2: #01d3f5;
+$babyblue: #009ddc;
+$navy: #9dc9ff;
+$navy2: #9dc9ff;
+$yellow: #f9d428;
+$orange: #ff684a;
+$green: #22c55e;
+$mint: #3dffde;
+$red: #dc4324;
+$pink: #fc2e89;
+$purple: var(--purple);
+
+:root {
+  --black: #000000;
+  --black2: #222222;
+  --white: #ffffff;
+  --softGray: #f7f7f7;
+  --gray: #999999;
+  --purple: #6B46C1;
+}
+
+// dark mode colors
+.dark {
+  --black: #ffffff;
+  --black2: #ffffff;
+  --white: #000000;
+  --softGray: #535353;
+  --gray: #f7f7f7;
+  --purple: #bdcbff;  
+}
+
+// Typography
+$font-family: 's-core-dream', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+// Assets
+$sprite-url: '@/assets/images/img-sprite.png';
+$sprite-url--retina: '@/assets/images/img-sprite@2x.png';

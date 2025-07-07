@@ -1,0 +1,72 @@
+// Mixins for browser compatibility and custom functionality
+// Transform
+@mixin transform($val) {
+  transform: $val;
+  -webkit-transform: $val;
+  -moz-transform: $val;
+  -ms-transform: $val;
+}
+
+// Transition
+@mixin transition($val) {
+  transition: $val;
+  -webkit-transition: $val;
+  -moz-transition: $val;
+  -ms-transition: $val;
+}
+
+// Text size adjust
+@mixin text-size-adjust($val) {
+  -webkit-text-size-adjust: $val;
+  -moz-text-size-adjust: $val;
+  text-size-adjust: $val;
+}
+
+// Hidden text (for accessibility)
+@mixin hiddenText {
+  @apply sr-only;
+}
+
+// Breakpoints
+@mixin bp($val) {
+  @media only screen and (max-width: $val) {
+    @content;
+  }
+}
+
+@mixin min-bp($val) {
+  @media only screen and (min-width: $val) {
+    @content;
+  }
+}
+
+@mixin bp-landscape($val) {
+  @media only screen and (orientation: landscape) and (max-width: $val) {
+    @content;
+  }
+}
+
+// Comment explaining Tailwind alternatives for removed mixins:
+/*
+대체 가능한 Tailwind 클래스들:
+
+display-flex → flex
+display-inlineFlex → inline-flex
+align-content → content-*
+flex-wrap → flex-wrap
+align-items → items-*
+justify-content → justify-*
+box-sizing → box-*
+appearance → appearance-*
+user-select → select-*
+break-word → break-words
+ellipsis → truncate
+line-clamp2 → line-clamp-2
+line-clamp3 → line-clamp-3
+
+예시:
+- @include display-flex; → @apply flex;
+- @include align-items(center); → @apply items-center;
+- @include justify-content(between); → @apply justify-between;
+- @include ellipsis; → @apply truncate;
+*/

@@ -1,0 +1,40 @@
+@use 'mixin' as mx;
+@use 'variable' as vars;
+
+@mixin icon {
+  display: inline-block;
+  background-image: url(vars.$sprite-url);
+  background-repeat: no-repeat;
+  background-size: 379px;
+}
+
+@mixin icon-2x {
+  display: inline-block;
+  background-image: url(vars.$sprite-url--retina);
+  background-repeat: no-repeat;
+  background-size: calc(379px / 2);
+}
+
+@mixin icon-arrow-down {
+  width: 16px;
+  height: 9px;
+  background-position: 0 0;
+}
+
+@mixin icon-arrow-down-2x {
+  width: calc(16px / 2);
+  height: calc(9px / 2);
+  background-position: calc(0px / 2) calc(0px / 2);
+}
+
+@mixin icon-arrow-up {
+  width: 16px;
+  height: 9px;
+  background-position: -21px 0;
+}
+
+@mixin icon-arrow-up-2x {
+  width: calc(16px / 2);
+  height: calc(9px / 2);
+  background-position: calc(-21px / 2) calc(0px / 2);
+}
