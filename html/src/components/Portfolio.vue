@@ -200,7 +200,8 @@ const handleScroll = () => {
 const throttledScroll = () => {
   if (scrollTimeout !== null) return;
   scrollTimeout = window.setTimeout(() => {
-    handleScroll();
+    // handleScroll();
+    common.setGnb();
     scrollTimeout = null;
   }, 100); // 100ms마다 한 번만 실행
 };
@@ -240,17 +241,17 @@ onMounted(async () => {
     }
   }, 5000); // 5초마다
 
-  // window.addEventListener('scroll', throttledScroll);
+  window.addEventListener('scroll', throttledScroll);
 })
 
 onBeforeUnmount(() => {
   if (pollingInterval) clearInterval(pollingInterval);
 
-  // window.removeEventListener('scroll', throttledScroll);
-  // if (scrollTimeout !== null) {
-  //   clearTimeout(scrollTimeout);
-  //   scrollTimeout = null;
-  // }
+  window.removeEventListener('scroll', throttledScroll);
+  if (scrollTimeout !== null) {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = null;
+  }
 });
 
 watch(selectedCategory, () => {

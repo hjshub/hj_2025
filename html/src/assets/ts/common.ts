@@ -452,7 +452,7 @@ export default function CommonFunction(): CommonFunctionReturn {
         gb.isScroll = false;
     }
 
-    console.log(deltaY);
+    // console.log(deltaY);
   };
   const scrollDelta = () => {
     const currentScrollTop = window.scrollY;
@@ -893,7 +893,7 @@ const handleScroll = throttle(() => {
     Performance.start('scroll-handler');
     const commonFunc = gb.CommonFunction();
 
-    commonFunc.setGnb();
+    // commonFunc.setGnb();
     commonFunc.animate();
       
     const scrollGageElement: Element | null = document.querySelector('.scrollGage');
