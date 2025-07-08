@@ -931,7 +931,7 @@ main {
 
     &.section-04 {
       @include mx.bp(821px) {
-        min-height:calc(100dvh - 17rem);
+        min-height:calc(100lvh - 17rem);
       }
       @include mx.bp(561px) {
         padding: 80px 0;
