@@ -37,6 +37,7 @@ export default class _gb {
   toast: boolean;
   isScroll : Boolean;
   isPlay : Boolean;
+  lastScrollTop : number;
 
   constructor() {
     this.wW = window.innerWidth;
@@ -61,7 +62,8 @@ export default class _gb {
     this.toast = false;
     this.isScroll = false;
     this.isPlay = true;
-    
+    this.lastScrollTop = window.scrollY;
+
     // CommonFunction 초기화
      this.CommonFunction = CommonFunction;
   }

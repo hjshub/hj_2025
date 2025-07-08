@@ -100,6 +100,21 @@ const throttle = <T extends (...args: any[]) => any>(
   };
 };
 
+// const throttle = function(func, limit) {
+//   let inThrottle; 
+//   return function() {
+//     if (!inThrottle) {
+//         func.apply(this, arguments);
+//         // apply의 두 번째 인자는 배열(또는 배열 유사 객체)여야 하며,
+//         // arguments는 함수 내부에서 자동으로 제공되는 "인자 목록"입니다.
+//         // arguments는 함수 내부에서만 쓸 수 있고,
+//         // 명시적으로 선언할 필요가 없습니다.
+//         inThrottle = true;
+//         setTimeout(function() { inThrottle = false; }, limit);
+//     }
+//   };
+// };
+
 // 이벤트 관리 시스템
 const EventManager = {
   handlers: new Map<string, Set<Function>>(),
@@ -413,23 +428,39 @@ export default function CommonFunction(): CommonFunctionReturn {
   const setGnb = () => {
     const gnb : HTMLElement | null = document.getElementById('gnb');
     const menu : HTMLElement | null = document.querySelector('.menu');
+    const deltaY = scrollDelta();
+
     if(document.documentElement.scrollTop >= gnb?.clientHeight){
-      menu.style.position = 'fixed';
-      if(!gb.isScroll){
-        gsap.set(menu, {yPercent:-120})
-        gsap.to(menu, {
-          yPercent:0,
-          duration:0.2,
-          onComplete: () => {
-            gb.isScroll = true;
-          }
-        })
+      if(deltaY < 0){
+        menu.style.position = 'fixed';
+        if(!gb.isScroll){
+          gsap.set(menu, {yPercent:-120})
+          gsap.to(menu, {
+            yPercent:0,
+            duration:0.2,
+            onComplete: () => {
+              gb.isScroll = true;
+            }
+          })
+        }
+      }else {
+        menu.style.position = 'absolute';
+        gb.isScroll = false;
       }
     }else {
-      menu.style.position = 'absolute';
-      gb.isScroll = false;
+        menu.style.position = 'absolute';
+        gb.isScroll = false;
     }
+
+    console.log(deltaY);
   };
+  const scrollDelta = () => {
+    const currentScrollTop = window.scrollY;
+    const deltaY = currentScrollTop - gb.lastScrollTop;
+    gb.lastScrollTop = currentScrollTop;
+
+    return deltaY;
+  }
   const allMenuClose = () => {
     gb.html.classList.remove('menu-open');
     gb.body.style.height = 'auto';

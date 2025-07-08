@@ -239,7 +239,7 @@ textarea {
       }
   
       span {
-        @apply relative text-purple bg-purple bg-gradient-to-r from-[var(--purple)] via-[var(--black)] to-[transparent] w-full text-center;
+        @apply relative text-purple bg-purple bg-gradient-to-r from-[var(--black)] via-[var(--black)] to-[transparent] w-full text-center;
         perspective: 400px;
         -webkit-perspective: 400px;
         background-clip: text;
@@ -934,7 +934,7 @@ main {
         min-height:calc(100lvh - 17rem);
       }
       @include mx.bp(561px) {
-        padding: 80px 0 140px;
+        padding: 80px 0;
       }
       h2 {
         margin-bottom: 3rem;

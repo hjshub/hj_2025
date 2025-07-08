@@ -122,7 +122,7 @@ const paginatedProjects = computed(() => {
 const onPageChange = async (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
-    // common.scrollReset(0)
+    common.scrollReset(0)
     await nextTick()
     common.animate()
   }
@@ -142,7 +142,7 @@ const filterProjects = async () => {
     filteredProjects.value = projects.value.filter(project => project.category === selectedCategory.value)
   }
   // 필터 변경 시 페이지/애니메이션 리셋
-  // common.scrollReset(0)
+  common.scrollReset(0)
   await nextTick()
   common.animate()
 }
@@ -240,17 +240,17 @@ onMounted(async () => {
     }
   }, 5000); // 5초마다
 
-  window.addEventListener('scroll', throttledScroll);
+  // window.addEventListener('scroll', throttledScroll);
 })
 
 onBeforeUnmount(() => {
   if (pollingInterval) clearInterval(pollingInterval);
 
-  window.removeEventListener('scroll', throttledScroll);
-  if (scrollTimeout !== null) {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = null;
-  }
+  // window.removeEventListener('scroll', throttledScroll);
+  // if (scrollTimeout !== null) {
+  //   clearTimeout(scrollTimeout);
+  //   scrollTimeout = null;
+  // }
 });
 
 watch(selectedCategory, () => {

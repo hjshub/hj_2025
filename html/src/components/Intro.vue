@@ -251,8 +251,8 @@ const introMotion = () => {
   })
   .to('.intro-1 .step-2', {
     backgroundPositionX:'100VW',
-    duration:1.8,
-    repeat:1,
+    duration:0.6,
+    repeat:2,
     yoyo:true
   },'+=1')
   
