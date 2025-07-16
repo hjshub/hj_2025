@@ -9,7 +9,7 @@
     </div>
     <div class="flex--wrap align-center">
       <div class="menu">
-        <ul class="flex--wrap edge w-[100%]">
+        <ul class="flex--wrap">
           <li v-for="(item, index) in menuItems" :key="index">
             <router-link class="anchor" :class="route.path == item.href ? 'active' : ''" :to="item.href" lang="en">{{ item.text }}</router-link>
           </li>

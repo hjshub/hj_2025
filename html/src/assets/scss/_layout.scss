@@ -16,6 +16,7 @@ html {
   @apply text-[62.5%] antialiased;
   -moz-osx-font-smoothing: auto;
   @include mx.text-size-adjust(none);
+  min-width:320px;
 
   @include mx.bp(1024px) {
     @apply text-[58%];
@@ -204,7 +205,7 @@ textarea {
 }
 
 [class*=intro-box] {
-  @apply absolute w-[28vw] h-[28vw] top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] text-[4.5rem] font-score-bold;
+  @apply absolute w-[22vw] h-[22vw] top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%] text-[4.3rem] font-score-bold;
   line-height: 1.7;
 
   @include mx.bp(821px) {
@@ -226,11 +227,11 @@ textarea {
       -webkit-perspective: 400px;
 
       strong {
-        @apply flex text-[14rem];
+        @apply flex text-[12rem];
         line-height:1;
 
         @include mx.bp(640px) {
-          @apply text-[11rem]
+          @apply text-[10rem]
         }
         
         i {
@@ -250,12 +251,12 @@ textarea {
         background-repeat:no-repeat;
 
         i {
-          @apply opacity-0 text-[3.4rem];
+          @apply opacity-0 text-[3rem];
           font-weight: 600;
           font-style: italic;
 
           @include mx.bp(640px) {
-            @apply text-[3rem];
+            @apply text-[2.8rem];
           }
         }
       }
@@ -715,15 +716,11 @@ main {
   
   section {
     position: relative;
-    min-height:calc(100vh - 22rem);
+    min-height:calc(100vh - 14rem);
     width: 100%;
     z-index: 10;
     padding: 160px 0;
     background-color: vars.$white;
-
-    @include mx.bp(821px) {
-      min-height:calc(100svh - 17rem);
-    }
 
     @include mx.bp(561px) {
       padding: 80px 0;
@@ -930,12 +927,6 @@ main {
     }
 
     &.section-04 {
-      @include mx.bp(821px) {
-        min-height:calc(100lvh - 17rem);
-      }
-      @include mx.bp(561px) {
-        padding: 80px 0;
-      }
       h2 {
         margin-bottom: 3rem;
       }

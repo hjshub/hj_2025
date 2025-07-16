@@ -12,30 +12,22 @@
 
   > div{
     &:first-of-type {
-      @apply h-[7rem] border-b border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
-
-      @include mx.bp(821px) {
-        @apply h-[6rem];
-      }
+      @apply h-[4rem] border-b border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
     }
 
     &:nth-of-type(2){
-      @apply relative h-[7rem];
-
-      @include mx.bp(821px) {
-        @apply h-[5rem];
-      }
+      @apply relative h-[5rem];
     }
   }
 
   .menu {
-    @apply absolute top-0 z-[999] w-full bg-white;
+    @apply absolute top-0 z-[999] w-full h-[5rem] bg-white border-b-[3px] border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
 
     ul {
-      @apply w-full h-[7rem] border-b-[3px] border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
+      @apply justify-self-end w-[40%] h-[5rem];
 
       @include mx.bp(821px) {
-        @apply h-[5rem];
+        @apply w-full;
       }
 
       li {
@@ -50,7 +42,11 @@
         }
 
         & ~ li {
-          @apply border-l border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
+          @apply relative;
+          &:before {
+            @apply block w-[1px] h-[50%] absolute top-1/2 left-0 -translate-y-1/2 bg-[rgba(162,162,162,0.1)] dark:bg-[rgba(255,255,255,0.2)];
+            content:'';
+          }
         }
       }
     }
@@ -58,7 +54,7 @@
 
 
   .scrollGage {
-    @apply bg-black h-[3px] w-0 absolute bottom-0;
+    @apply bg-black h-[3px] w-0 absolute bottom-[-3px];
     @include mx.transition(all ease-out 0.2s);
   }
 

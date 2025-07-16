@@ -431,28 +431,34 @@ export default function CommonFunction(): CommonFunctionReturn {
     const deltaY = scrollDelta();
 
     if(document.documentElement.scrollTop >= gnb?.clientHeight){
-      if(deltaY < 0){
-        menu.style.position = 'fixed';
-        if(!gb.isScroll){
-          gsap.set(menu, {yPercent:-120})
-          gsap.to(menu, {
+      menu.style.position = 'fixed';
+      if(!gb.isScroll){
+        gb.isScroll = true;
+        if(deltaY < 0){
+          gsap.set(menu, {
             yPercent:0,
-            duration:0.2,
+            y:0,
             onComplete: () => {
-              gb.isScroll = true;
+              gb.isScroll = false;
+            }
+          })
+        }else {
+        gsap.set(menu, {
+            yPercent:-100,
+            y:3,
+            onComplete: () => {
+              gb.isScroll = false;
             }
           })
         }
-      }else {
-        menu.style.position = 'absolute';
-        gb.isScroll = false;
       }
     }else {
         menu.style.position = 'absolute';
-        gb.isScroll = false;
+        gsap.set(menu, {
+          yPercent:0,
+          y:0
+        })
     }
-
-    // console.log(deltaY);
   };
   const scrollDelta = () => {
     const currentScrollTop = window.scrollY;
