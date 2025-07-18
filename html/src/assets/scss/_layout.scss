@@ -716,15 +716,10 @@ main {
   
   section {
     position: relative;
-    min-height:calc(100vh - 14rem);
     width: 100%;
     z-index: 10;
     padding: 160px 0;
     background-color: vars.$white;
-
-    @include mx.bp(821px) {
-      min-height:auto;
-    }
 
     @include mx.bp(561px) {
       padding: 80px 0;
@@ -732,6 +727,7 @@ main {
 
     &.section-01 {
       @apply bg-white;
+      min-height:calc(100vh - 14rem);
       @include mx.bp(821px) {
         min-height:calc(100svh - 14rem);
       }
