@@ -720,6 +720,7 @@ main {
     z-index: 10;
     padding: 160px 0;
     background-color: vars.$white;
+    min-height:calc(100vh - 14rem);
 
     @include mx.bp(561px) {
       padding: 80px 0;
@@ -727,7 +728,6 @@ main {
 
     &.section-01 {
       @apply bg-white;
-      min-height:calc(100vh - 14rem);
       @include mx.bp(821px) {
         min-height:calc(100svh - 14rem);
       }
@@ -930,6 +930,9 @@ main {
     }
 
     &.section-04 {
+      @include mx.bp(821px) {
+        min-height:calc(100lvh - 14rem);
+      }
       h2 {
         margin-bottom: 3rem;
       }
