@@ -3,8 +3,8 @@
     <Header :key="$route.fullPath" :isDarkMode="isDarkMode" @update:themeStatus="toggleTheme"/>
     <main id="contents">
       <router-view />
+      <Footer />
     </main>
-    <Footer />
   </div>
 </template>
 
