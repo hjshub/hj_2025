@@ -912,4 +912,4 @@ const handleScroll = throttle(() => {
 }, 16);
 
 // 이벤트 리스너 등록
-window.addEventListener('scroll', handleScroll);
+// window.addEventListener('scroll', handleScroll);

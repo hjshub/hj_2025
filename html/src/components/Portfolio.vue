@@ -125,13 +125,6 @@ const onPageChange = async (page: number) => {
     common.scrollReset(0)
     await nextTick()
     common.animate()
-    window.removeEventListener('scroll', throttledScroll);
-    if (scrollTimeout !== null) {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = null;
-    }
-    await nextTick()
-    window.addEventListener('scroll', throttledScroll);
   }
 }
 
@@ -152,13 +145,6 @@ const filterProjects = async () => {
   common.scrollReset(0)
   await nextTick()
   common.animate()
-  window.removeEventListener('scroll', throttledScroll);
-  if (scrollTimeout !== null) {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = null;
-  }
-  await nextTick()
-  window.addEventListener('scroll', throttledScroll);
 }
 
 const copyProjectUrl = (e: Event, url: string) => {
@@ -216,6 +202,9 @@ const throttledScroll = () => {
   scrollTimeout = window.setTimeout(() => {
     // handleScroll();
     common.setGnb();
+    common.animate();
+    const scrollGageElement: Element | null = document.querySelector('.scrollGage');
+    scrollGageElement.style.width = `${common.scrollGage()}%`;
     scrollTimeout = null;
   }, 100); // 100ms마다 한 번만 실행
 };
