@@ -125,6 +125,13 @@ const onPageChange = async (page: number) => {
     common.scrollReset(0)
     await nextTick()
     common.animate()
+    window.removeEventListener('scroll', throttledScroll);
+    if (scrollTimeout !== null) {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = null;
+    }
+    await nextTick()
+    window.addEventListener('scroll', throttledScroll);
   }
 }
 
@@ -145,6 +152,13 @@ const filterProjects = async () => {
   common.scrollReset(0)
   await nextTick()
   common.animate()
+  window.removeEventListener('scroll', throttledScroll);
+  if (scrollTimeout !== null) {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = null;
+  }
+  await nextTick()
+  window.addEventListener('scroll', throttledScroll);
 }
 
 const copyProjectUrl = (e: Event, url: string) => {
