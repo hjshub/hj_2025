@@ -15,6 +15,7 @@
           </li>
         </ul>
         <div class="scrollGage" :style="{ width: scrollProgress + '%' }"></div>
+        <div class="bg-black text-white">{{`window:${window_h}, screen:${screen_h}`}}</div>
       </div>
     </div>
   </header>
@@ -29,6 +30,9 @@ const common = CommonFunction()
 const route = useRoute()
 
 const scrollProgress = ref(0)
+
+const window_h = ref(0)
+const screen_h = ref(0)
 
 let scrollTimeout: number | null = null
 
@@ -57,12 +61,17 @@ const throttledScroll = () => {
     common.setViewportHeight();
     scrollProgress.value = common.scrollGage();
 
+    window_h.value = window.innerHeight;
+    screen_h.value = screen.height;
+
     scrollTimeout = null;
   }, 100); // 100ms마다 한 번만 실행
 };
 
 onMounted(() => {
   common.init()
+  window_h.value = window.innerHeight;
+  screen_h.value = screen.height;
   window.addEventListener('scroll', throttledScroll);
 })
 
