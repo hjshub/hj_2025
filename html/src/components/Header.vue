@@ -59,6 +59,7 @@ const throttledScroll = () => {
   scrollTimeout = window.setTimeout(() => {
     common.setGnb();
     common.animate();
+    common.setViewportHeight();
     scrollProgress.value = common.scrollGage();
 
     window_h.value = window.outerHeight;

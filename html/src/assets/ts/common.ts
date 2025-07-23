@@ -40,6 +40,7 @@ interface CommonFunctionReturn {
   scrollReset: () => void;
   setGnb: () => void;
   scrollGage: () => number;
+  setViewportHeight: () => void;
   animate: () => void;
   toggleTheme: () => void;
   copyToClipboard: (val: string) => void;
@@ -630,6 +631,10 @@ export default function CommonFunction(): CommonFunctionReturn {
 
     return gb.scrollSize;
   };
+  const setViewportHeight = () => {
+    const vh = window.innerHeight*0.01;
+    document.documentElement.style.setProperty('--vh',`${vh}px`);
+  }
   const setPos = () => {
     function PageAnchor(link: HTMLAnchorElement): string | false {
       if (
@@ -834,6 +839,7 @@ export default function CommonFunction(): CommonFunctionReturn {
       scrollReset();
       scrollGage();
       animate();
+      setViewportHeight();
       
       Performance.end('init');
     } catch (error) {
@@ -848,6 +854,7 @@ export default function CommonFunction(): CommonFunctionReturn {
     countYear,
     scrollReset,
     scrollGage,
+    setViewportHeight,
     animate,
     toggleTheme,
     copyToClipboard,
@@ -886,11 +893,14 @@ window.addEventListener('resize', () => {
   } else {
     gb.CommonFunction().scrollReset();
   }
+
+  gb.CommonFunction().setViewportHeight();
 });
 
 window.addEventListener('orientationchange', () => {
   //ScrollTrigger.refresh(true);
   location.reload();
+  gb.CommonFunction().setViewportHeight();
 });
 
 // 성능 최적화된 스크롤 이벤트 핸들러
@@ -899,7 +909,7 @@ const handleScroll = throttle(() => {
     Performance.start('scroll-handler');
     const commonFunc = gb.CommonFunction();
 
-    // commonFunc.setGnb();
+    commonFunc.setGnb();
     commonFunc.animate();
       
     const scrollGageElement: Element | null = document.querySelector('.scrollGage');
