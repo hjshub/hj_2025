@@ -171,6 +171,7 @@ onMounted(async () => {
     // DOM 업데이트 후 애니메이션 실행
     await nextTick()
     common.animate()
+    common.setViewportHeight();
   } catch (error) {
     console.error('Failed to load projects:', error)
   }
