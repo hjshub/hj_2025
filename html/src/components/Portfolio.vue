@@ -94,13 +94,10 @@ import CommonFunction from '../assets/ts/common'
 import Pagination from './Pagination.vue'
 
 const common = CommonFunction()
-const router = useRouter()
 const selectedCategory = ref('')
 const projects = ref<any[]>([])
 const filteredProjects = ref<any[]>([])
 const isMob = common.isMob()
-let lastScrollTop = window.scrollY
-let scrollTimeout: number | null = null
 
 let pollingInterval: number | undefined = undefined;
 let lastFetchedData: any = null;
@@ -164,51 +161,6 @@ const axiosListUp = async () => {
   }
 };
 
-const scrollDelta = () => {
-  const currentScrollTop = window.scrollY;
-  const deltaY = currentScrollTop - lastScrollTop;
-  lastScrollTop = currentScrollTop;
-
-  return deltaY;
-}
-
-const handleScroll = () => {
-  const scrollDeltaY = scrollDelta();
-  const root = document.documentElement;
-
-  if (root.scrollHeight > root.scrollTop + root.clientHeight) {
-    if (scrollDeltaY > 0) {
-        gsap.to('#footer', {
-          yPercent: 100,
-          duration: 0.2
-        });
-      } else {
-        gsap.to('#footer', {
-          yPercent: 0,
-          duration: 0.2
-        });
-      }
-  } else {
-    gsap.to('#footer', {
-      yPercent: 0,
-      duration: 0.2
-    });
-  }
-};
-
-// throttledScroll을 변수로 선언
-const throttledScroll = () => {
-  if (scrollTimeout !== null) return;
-  scrollTimeout = window.setTimeout(() => {
-    // handleScroll();
-    common.setGnb();
-    common.animate();
-    const scrollGageElement: Element | null = document.querySelector('.scrollGage');
-    scrollGageElement.style.width = `${common.scrollGage()}%`;
-    scrollTimeout = null;
-  }, 100); // 100ms마다 한 번만 실행
-};
-
 onMounted(async () => {
   try {
     const response = await axiosListUp()
@@ -244,17 +196,10 @@ onMounted(async () => {
     }
   }, 5000); // 5초마다
 
-  window.addEventListener('scroll', throttledScroll);
 })
 
 onBeforeUnmount(() => {
   if (pollingInterval) clearInterval(pollingInterval);
-
-  window.removeEventListener('scroll', throttledScroll);
-  if (scrollTimeout !== null) {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = null;
-  }
 });
 
 watch(selectedCategory, () => {

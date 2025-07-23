@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, defineProps, defineEmits } from 'vue'
+import { ref, onMounted, onBeforeUnmount, onUnmounted, defineProps, defineEmits } from 'vue'
 import { useRoute } from 'vue-router'
 import CommonFunction from '../assets/ts/common'
 
@@ -29,6 +29,7 @@ const common = CommonFunction()
 const route = useRoute()
 
 const scrollProgress = ref(0)
+let scrollTimeout: number | null = null
 
 const menuItems = [
   { href: '/', text: 'home' },
@@ -46,9 +47,29 @@ const props = defineProps({
 
 defineEmits(['update:themeStatus'])
 
+// throttledScroll을 변수로 선언
+const throttledScroll = () => {
+  if (scrollTimeout !== null) return;
+  scrollTimeout = window.setTimeout(() => {
+    common.setGnb();
+    common.animate();
+    scrollProgress.value = common.scrollGage();
+    scrollTimeout = null;
+  }, 100); // 100ms마다 한 번만 실행
+};
+
 onMounted(() => {
   common.init()
+  window.addEventListener('scroll', throttledScroll);
 })
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', throttledScroll);
+  if (scrollTimeout !== null) {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = null;
+  }
+});
 
 onUnmounted(() => {
 })
