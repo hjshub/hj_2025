@@ -15,6 +15,7 @@
           </li>
         </ul>
         <div class="scrollGage" :style="{ width: scrollProgress + '%' }"></div>
+        <div class="bg-black text-white">{{`window:${window_h}, layout:${layout_h}, section:${section_h}`}}</div>
       </div>
     </div>
   </header>
@@ -29,6 +30,11 @@ const common = CommonFunction()
 const route = useRoute()
 
 const scrollProgress = ref(0)
+
+const window_h = ref(0)
+const layout_h = ref(0)
+const section_h = ref(0)
+
 let scrollTimeout: number | null = null
 
 const menuItems = [
@@ -54,6 +60,11 @@ const throttledScroll = () => {
     common.setGnb();
     common.animate();
     scrollProgress.value = common.scrollGage();
+
+    window_h.value = window.outerHeight;
+    layout_h.value = document.getElementById('layout')?.clientHeight;
+    section_h.value = document.getElementById('section-04')?.clientHeight;
+
     scrollTimeout = null;
   }, 100); // 100ms마다 한 번만 실행
 };
@@ -61,6 +72,10 @@ const throttledScroll = () => {
 onMounted(() => {
   common.init()
   window.addEventListener('scroll', throttledScroll);
+
+  window_h.value = window.outerHeight;
+  layout_h.value = document.getElementById('layout')?.clientHeight;
+  section_h.value = document.getElementById('section-04')?.clientHeight;
 })
 
 onBeforeUnmount(() => {
