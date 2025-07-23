@@ -31,7 +31,6 @@ body {
   @apply text-[1.6rem] font-normal leading-normal text-black !important;
   @include mx.text-size-adjust(none);
   font-family: vars.$font-family;
-  height:calc(var(--vh)*100);
 }
 
 em,
@@ -721,7 +720,7 @@ main {
     z-index: 10;
     padding: 160px 0;
     background-color: vars.$white;
-    min-height:calc(var(--vh)*100 - 14rem);
+    min-height:calc(var(--vh, 1vh)*100 - 14rem);
 
     @include mx.bp(561px) {
       padding: 80px 0;
@@ -928,6 +927,10 @@ main {
     }
 
     &.section-04 {
+      min-height:calc(var(--vh, 1vh)*100 - 9rem);
+      @include mx.bp(561px) {
+        padding: 80px 0 130px;
+      }
       h2 {
         margin-bottom: 3rem;
       }
