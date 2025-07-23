@@ -31,6 +31,7 @@ body {
   @apply text-[1.6rem] font-normal leading-normal text-black !important;
   @include mx.text-size-adjust(none);
   font-family: vars.$font-family;
+  height:calc(var(--vh)*100);
 }
 
 em,
