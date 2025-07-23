@@ -74,7 +74,7 @@ onMounted(() => {
   common.init()
   window.addEventListener('scroll', throttledScroll);
 
-  window_h.value = window.outerHeight;
+  window_h.value = window.innerHeight;
   layout_h.value = document.getElementById('layout')?.clientHeight;
   section_h.value = document.getElementById('section-04')?.clientHeight;
 })
