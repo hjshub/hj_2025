@@ -713,7 +713,6 @@ main:after {
 /*main*/
 main {
   @apply relative bg-white w-[100%];
-  min-height:calc(var(--vh, 1vh)*100);
   
   section {
     position: relative;
