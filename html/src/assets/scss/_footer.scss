@@ -7,7 +7,7 @@
  * ==============================+
  */
 footer {
-  @apply bg-black w-full text-white z-10 h-[5rem] text-[1.8rem];
+  @apply fixed bottom-0 bg-black w-full text-white z-10 h-[5rem] text-[1.8rem];
   @apply flex;
   @apply items-center;
 

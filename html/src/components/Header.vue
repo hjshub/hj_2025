@@ -15,7 +15,6 @@
           </li>
         </ul>
         <div class="scrollGage" :style="{ width: scrollProgress + '%' }"></div>
-        <div class="bg-black text-white">{{`window:${window_h}, screen:${screen_h}`}}</div>
       </div>
     </div>
   </header>
@@ -24,15 +23,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, onUnmounted, defineProps, defineEmits } from 'vue'
 import { useRoute } from 'vue-router'
+import gsap from 'gsap'
 import CommonFunction from '../assets/ts/common'
 
 const common = CommonFunction()
 const route = useRoute()
 
 const scrollProgress = ref(0)
-
-const window_h = ref(0)
-const screen_h = ref(0)
 
 let scrollTimeout: number | null = null
 
@@ -61,8 +58,12 @@ const throttledScroll = () => {
     common.setViewportHeight();
     scrollProgress.value = common.scrollGage();
 
-    window_h.value = window.innerHeight;
-    screen_h.value = screen.height;
+    const footer = document.querySelector('#section-04 + footer');
+    if(scrollProgress.value == 100){
+      gsap.to(footer, {yPercent:0, duraton:0.2});
+    }else {
+      gsap.to(footer, {yPercent:100, duraton:0.2});
+    }
 
     scrollTimeout = null;
   }, 100); // 100ms마다 한 번만 실행
@@ -70,8 +71,6 @@ const throttledScroll = () => {
 
 onMounted(() => {
   common.init()
-  window_h.value = window.innerHeight;
-  screen_h.value = screen.height;
   window.addEventListener('scroll', throttledScroll);
 })
 
