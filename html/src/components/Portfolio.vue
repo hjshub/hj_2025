@@ -119,9 +119,14 @@ const paginatedProjects = computed(() => {
 const onPageChange = async (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
-    common.scrollReset(0)
-    await nextTick()
-    common.animate()
+    await nextTick();
+    setTimeout(() => {
+      common.setViewportHeight();
+      window.scrollTo(0, 0);
+      window.scrollBy(0, 1);
+      window.scrollBy(0, -1);
+    }, 100);
+    common.animate();
   }
 }
 
@@ -139,9 +144,14 @@ const filterProjects = async () => {
     filteredProjects.value = projects.value.filter(project => project.category === selectedCategory.value)
   }
   // 필터 변경 시 페이지/애니메이션 리셋
-  common.scrollReset(0)
-  await nextTick()
-  common.animate()
+  await nextTick();
+  setTimeout(() => {
+    common.setViewportHeight();
+    window.scrollTo(0, 0);
+    window.scrollBy(0, 1);
+    window.scrollBy(0, -1);
+  }, 100);
+  common.animate();
 }
 
 const copyProjectUrl = (e: Event, url: string) => {
@@ -169,9 +179,8 @@ onMounted(async () => {
     lastFetchedData = response
     
     // DOM 업데이트 후 애니메이션 실행
-    await nextTick()
-    common.animate()
-    common.setViewportHeight();
+  await nextTick();
+  common.animate();
   } catch (error) {
     console.error('Failed to load projects:', error)
   }

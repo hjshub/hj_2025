@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import CommonFunction from '../assets/ts/common'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,17 @@ const router = createRouter({
       component: () => import('../views/ContactView.vue')
     },
   ]
+})
+
+// 라우트 변경 후 뷰포트 및 스크롤 트리거 처리
+router.afterEach(() => {
+  setTimeout(() => {
+    const common = CommonFunction()
+    common.setViewportHeight()
+    window.scrollTo(0, 0)
+    window.scrollBy(0, 1)
+    window.scrollBy(0, -1)
+  }, 100)
 })
 
 export default router 

@@ -14,8 +14,8 @@
             <router-link class="anchor" :class="route.path == item.href ? 'active' : ''" :to="item.href" lang="en">{{ item.text }}</router-link>
           </li>
         </ul>
-        <div class="scrollGage" :style="{ width: scrollProgress + '%' }"></div>
-        <div class="bg-black text-white">{{ `vh: ${_vh}, progress: ${scrollProgress}, progress2: ${scrollProgress2}`}}</div>
+        <div class="scrollGage"></div>
+        <div class="bg-black text-white ddd"></div>
       </div>
     </div>
   </header>
@@ -29,10 +29,6 @@ import CommonFunction from '../assets/ts/common'
 
 const common = CommonFunction()
 const route = useRoute()
-
-const scrollProgress = ref(0)
-const scrollProgress2 = ref(0)
-const _vh = ref(0)
 
 let scrollTimeout: number | null = null
 
@@ -59,16 +55,7 @@ const throttledScroll = () => {
     common.setGnb();
     common.animate();
     common.setViewportHeight();
-    _vh.value = window.innerHeight*0.01;
     scrollProgress.value = common.scrollGage();
-    scrollProgress2.value = Math.floor((document.documentElement.scrollTop / (document.documentElement.scrollHeight - document.documentElement.clientHeight)) * 100);
-
-    const footer = document.querySelector('#section-04 + footer');
-    if(scrollProgress.value == 100){
-      gsap.set(footer, {yPercent:0});
-    }else {
-      gsap.set(footer, {yPercent:100});
-    }
 
     scrollTimeout = null;
   }, 100); // 100ms마다 한 번만 실행
@@ -76,15 +63,15 @@ const throttledScroll = () => {
 
 onMounted(() => {
   common.init()
-  window.addEventListener('scroll', throttledScroll);
+  // window.addEventListener('scroll', throttledScroll);
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', throttledScroll);
-  if (scrollTimeout !== null) {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = null;
-  }
+  // window.removeEventListener('scroll', throttledScroll);
+  // if (scrollTimeout !== null) {
+  //   clearTimeout(scrollTimeout);
+  //   scrollTimeout = null;
+  // }
 });
 
 onUnmounted(() => {

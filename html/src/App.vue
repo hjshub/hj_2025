@@ -31,6 +31,9 @@ onMounted(() => {
 </script>
 
 <style>
+#layout {
+  min-height:calc(var(--vh, 1vh) * 100);
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

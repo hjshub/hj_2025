@@ -627,7 +627,17 @@ export default function CommonFunction(): CommonFunctionReturn {
     gb.scrollTop = document.documentElement.scrollTop;
     gb.client_H = document.documentElement.clientHeight;
     gb.scroll_H = document.documentElement.scrollHeight;
-    gb.scrollSize = Math.floor((gb.scrollTop / (gb.scroll_H - gb.client_H)) * 100);
+
+    const maxScrollTop = gb.scroll_H - gb.client_H;
+    
+    // 실제 스크롤탑이 max보다 커지지 않도록 제한
+    const safeScrollTop = Math.min(gb.scrollTop, maxScrollTop);
+    gb.scrollSize = Math.floor((safeScrollTop / maxScrollTop) * 100);
+
+    // 99% 이상이면 100%로 보정 (모바일 하단 주소창 등 이슈 대응)
+    if (gb.scrollSize >= 95) {
+      gb.scrollSize = 100;
+    }
 
     return gb.scrollSize;
   };
@@ -837,7 +847,7 @@ export default function CommonFunction(): CommonFunctionReturn {
       // setPos();
       headerMotion();
       scrollReset();
-      scrollGage();
+      // scrollGage();
       animate();
       setViewportHeight();
       
@@ -912,14 +922,14 @@ const handleScroll = throttle(() => {
     commonFunc.setGnb();
     commonFunc.animate();
       
-    const scrollGageElement: Element | null = document.querySelector('.scrollGage');
-    scrollGageElement.style.width = `${commonFunc.scrollGage()}%`;
+    // const scrollGageElement: Element | null = document.querySelector('.scrollGage');
+    // scrollGageElement.style.width = `${commonFunc.scrollGage()}%`;
     
     Performance.end('scroll-handler');
   } catch (error) {
     ErrorHandler.catch(error instanceof Error ? error : new Error(String(error)));
   }
-}, 16);
+}, 100);
 
 // 이벤트 리스너 등록
-// window.addEventListener('scroll', handleScroll);
+window.addEventListener('scroll', handleScroll);
