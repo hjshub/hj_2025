@@ -14,7 +14,7 @@
             <router-link class="anchor" :class="route.path == item.href ? 'active' : ''" :to="item.href" lang="en">{{ item.text }}</router-link>
           </li>
         </ul>
-        <div class="scrollGage"></div>
+        <div class="scrollGage" :style="{ width : scrollProgress + '%'}"></div>
         <div class="bg-black text-white ddd"></div>
       </div>
     </div>
@@ -29,6 +29,8 @@ import CommonFunction from '../assets/ts/common'
 
 const common = CommonFunction()
 const route = useRoute()
+const scrollProgress = ref(0)
+const layout = document.querySelector('#layout')
 
 let scrollTimeout: number | null = null
 
@@ -58,20 +60,44 @@ const throttledScroll = () => {
     scrollProgress.value = common.scrollGage();
 
     scrollTimeout = null;
-  }, 100); // 100ms마다 한 번만 실행
+  }, 16); // 약 60fps에 해당
 };
 
 onMounted(() => {
   common.init()
-  // window.addEventListener('scroll', throttledScroll);
+  
+  if (!layout) return;
+
+  // iOS 내부 스크롤 컨테이너 bounce/벽돌 현상 우회
+  let startY = 0;
+  layout.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].clientY;
+  });
+
+  layout.addEventListener('touchmove', function(e) {
+    const scrollTop = layout.scrollTop;
+    const scrollHeight = layout.scrollHeight;
+    const offsetHeight = layout.offsetHeight;
+
+    // 맨 위에서 아래로 당길 때
+    if (scrollTop === 0 && e.touches[0].clientY > startY) {
+      e.preventDefault();
+    }
+    // 맨 아래에서 위로 올릴 때
+    if (scrollTop + offsetHeight >= scrollHeight && e.touches[0].clientY < startY) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  layout?.addEventListener('scroll', throttledScroll);
 })
 
 onBeforeUnmount(() => {
-  // window.removeEventListener('scroll', throttledScroll);
-  // if (scrollTimeout !== null) {
-  //   clearTimeout(scrollTimeout);
-  //   scrollTimeout = null;
-  // }
+  layout?.removeEventListener('scroll', throttledScroll);
+  if (scrollTimeout !== null) {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = null;
+  }
 });
 
 onUnmounted(() => {

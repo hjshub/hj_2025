@@ -429,9 +429,10 @@ export default function CommonFunction(): CommonFunctionReturn {
   const setGnb = () => {
     const gnb : HTMLElement | null = document.getElementById('gnb');
     const menu : HTMLElement | null = document.querySelector('.menu');
+    const layout : HTMLElement | null = document.querySelector('#layout');
     const deltaY = scrollDelta();
 
-    if(document.documentElement.scrollTop >= gnb?.clientHeight){
+    if(layout.scrollTop >= gnb?.clientHeight){
       menu.style.position = 'fixed';
       if(!gb.isScroll){
         gb.isScroll = true;
@@ -462,7 +463,9 @@ export default function CommonFunction(): CommonFunctionReturn {
     }
   };
   const scrollDelta = () => {
-    const currentScrollTop = window.scrollY;
+    // const currentScrollTop = window.scrollY;
+    const layout : HTMLElement | null = document.querySelector('#layout');
+    const currentScrollTop = layout.scrollTop;
     const deltaY = currentScrollTop - gb.lastScrollTop;
     gb.lastScrollTop = currentScrollTop;
 
@@ -624,9 +627,11 @@ export default function CommonFunction(): CommonFunctionReturn {
   };
   const scrollGage = () => {
     // 스크롤 게이지 (단위:%)
-    gb.scrollTop = document.documentElement.scrollTop;
-    gb.client_H = document.documentElement.clientHeight;
-    gb.scroll_H = document.documentElement.scrollHeight;
+
+    const layout : HTMLElement | null = document.querySelector('#layout');
+    gb.scrollTop = layout.scrollTop;
+    gb.client_H = layout.clientHeight;
+    gb.scroll_H = layout.scrollHeight;
 
     const maxScrollTop = gb.scroll_H - gb.client_H;
     
@@ -922,14 +927,14 @@ const handleScroll = throttle(() => {
     commonFunc.setGnb();
     commonFunc.animate();
       
-    // const scrollGageElement: Element | null = document.querySelector('.scrollGage');
-    // scrollGageElement.style.width = `${commonFunc.scrollGage()}%`;
+    const scrollGageElement: Element | null = document.querySelector('.scrollGage');
+    scrollGageElement.style.width = `${commonFunc.scrollGage()}%`;
     
     Performance.end('scroll-handler');
   } catch (error) {
     ErrorHandler.catch(error instanceof Error ? error : new Error(String(error)));
   }
-}, 100);
+}, 16);
 
 // 이벤트 리스너 등록
-window.addEventListener('scroll', handleScroll);
+// window.addEventListener('scroll', handleScroll);
