@@ -30,6 +30,7 @@ import CommonFunction from '../assets/ts/common'
 const common = CommonFunction()
 const route = useRoute()
 const scrollProgress = ref(0)
+const isMob = common.isMob()
 const layout = document.querySelector('#layout')
 
 let scrollTimeout: number | null = null
@@ -60,7 +61,7 @@ const throttledScroll = () => {
     scrollProgress.value = common.scrollGage();
 
     scrollTimeout = null;
-  }, 16); // 약 60fps에 해당
+  }, isMob ? 100 : 16); // 모바일 : 100밀리세컨즈, 웹 : 16 - 약 60fps에 해당
 };
 
 onMounted(() => {

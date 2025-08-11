@@ -123,8 +123,6 @@ const onPageChange = async (page: number) => {
     setTimeout(() => {
       common.setViewportHeight();
       window.scrollTo(0, 0);
-      window.scrollBy(0, 1);
-      window.scrollBy(0, -1);
     }, 100);
     common.animate();
   }
@@ -148,8 +146,6 @@ const filterProjects = async () => {
   setTimeout(() => {
     common.setViewportHeight();
     window.scrollTo(0, 0);
-    window.scrollBy(0, 1);
-    window.scrollBy(0, -1);
   }, 100);
   common.animate();
 }
