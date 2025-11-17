@@ -45,6 +45,8 @@ interface CommonFunctionReturn {
   toggleTheme: () => void;
   copyToClipboard: (val: string) => void;
   toastPopup: (txt: string) => void;
+  scrollAnimation: () => void;
+  rollingFanAnimation: () => void;
   // horizonScrollMotion : () => void;
   // countRating: () => void;
   getAnimationManager: () => typeof AnimationManager;
@@ -837,6 +839,192 @@ export default function CommonFunction(): CommonFunctionReturn {
       })(i);
     }
   }
+  const scrollAnimation = () => {
+      // ScrollTrigger.refresh(true);
+      // const spanEl = gsap.utils.toArray('.rollingFan span');
+
+      const spanEl = document.querySelectorAll('.rollingFan span') as NodeListOf<HTMLElement>;
+      const em = document.querySelectorAll('.rollingFan em') as NodeListOf<HTMLElement>;
+      const scroller = document.querySelector('#layout') as HTMLElement | null;
+      const vw = window.innerWidth;
+      const scrollerH = scroller?.offsetHeight ?? window.innerHeight;
+      const gap =  ((0.015*vw) / scrollerH).toFixed(2);
+      const start = 50 - (gap*100);
+      const end = 50 + (gap*100);
+
+      spanEl.forEach((el, i) => {
+        const childeEl = em[i] as HTMLElement | null;
+        const prev = childeEl?.previousElementSibling;
+        const next = childeEl?.nextElementSibling;
+        
+        gsap.to(el, {
+            ease: "none",
+            scrollTrigger: {
+                trigger: el,
+                // toggleActions: 'restart pause reverse pause', // scrub: false 일 때 사용
+                scroller : scroller,
+                markers: {
+                  startColor: 'red',
+                  endColor: 'blue',
+                  fontSize: '16px',
+                  // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+                },
+                start: () => `top ${start}%`,
+                end :  () => `bottom ${end}%`,
+                scrub: true,
+                onUpdate(self){
+                  // document.documentElement.style.setProperty('--top', String(document.getElementById('gnb')?.clientHeight + 'px'));
+                  // -> 트리거 span(el) 단위로 변수 설정
+                  // childeEl?.style.setProperty('--scrProgress', String(1 - self.progress));
+                },
+                onEnter() { 
+                  // childeEl && (childeEl.style.clipPath = `inset(0 0 0 0)`);
+                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
+                },
+                onLeave() {
+                  // childeEl && (childeEl.style.clipPath = `inset(0 0 100% 0)`);
+                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
+                },
+                onEnterBack() { 
+                  // childeEl && (childeEl.style.clipPath = 'inset(0 0 0 0)');
+                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
+                },
+                onLeaveBack() { 
+                  // childeEl && (childeEl.style.clipPath = 'inset(0 0 100% 0)');
+                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
+                }
+            }
+        });
+        // console.log(el.getBoundingClientRect().top);
+      });
+      // console.log(ScrollTrigger.getAll().length);
+      // ScrollTrigger.getAll().forEach(t => console.log(t.trigger, t.start, t.end));
+  };
+  // const rollingFanAnimation = () => {
+  //   // const fan = gsap.utils.toArray('.rollingFan span');
+  //   const fan = document.querySelectorAll('.rollingFan span');
+  //   const angle = [-60, -30, 0, 30, 60];
+  //   const rY = [0, -20, -40, -20, 0];
+  //   let n = 0;
+  //   // let rollingTimeOut = null;
+
+  //   const rolling = () => {
+  //     fan.forEach((el, i) => {
+  //       const idx = (i - n + rY.length) % rY.length;
+
+  //       const options: GSAPTweenVars = {
+  //         duration: 0.4,
+  //         rotation: angle[idx],
+  //         y: rY[idx],
+  //         x: Math.ceil(el.clientWidth * (idx - 2)),
+  //         overwrite: true,
+  //         // stagger: 0.3,
+  //         delay: idx * 0.1,
+  //         ease: 'power2.out',
+  //         onComplete: function(){
+  //           el.style.zIndex = idx ===  2 ? 10 : idx ===  0 ? 1 : rY.length - idx;
+  //         },
+  //       };
+
+  //       // idx가 마지막 인덱스일 경우 초기값을 opacity:0으로 세팅하고
+  //       // 애니메이션 완료 시 opacity를 1로 강제 설정
+  //       if (idx === rY.length - 1) {
+  //         gsap.set(el, { opacity: 0 });
+
+  //         const prevComplete = options.onComplete;
+  //         options.onComplete = function() {
+  //           // gsap.set(el, { opacity: 1 });
+  //           options.opacity = 1;
+  //           if (typeof prevComplete === 'function') {
+  //             prevComplete.apply(this, arguments as any);
+  //           }
+  //         };
+  //       } else {
+  //         options.opacity = 1;
+  //       }
+
+  //       gsap.to(el, options);
+  //     });
+
+  //     // rollingTimeOut = setTimeout(() => {
+  //     //   n = (n + 1) % rY.length;
+  //     //   rolling()
+  //     // }, 600 * rY.length);
+
+  //     function rafTimeout(callback: () => void, delay : number) {
+  //       const start = performance.now();
+  //       function loop(now: number) {
+  //         if (now - start >= delay) {
+  //           callback();
+  //         } else {
+  //           requestAnimationFrame(loop);
+  //         }
+  //       }
+  //       requestAnimationFrame(loop);
+  //     }
+
+  //     rafTimeout(() => {
+  //       n = (n + 1) % rY.length;
+  //       rolling();
+  //     }, 800 * rY.length);
+  //   }  
+    
+  //   rolling();
+  // };
+  const rollingFanAnimation = () => {
+    const angle = [-90, -60, -30, 0, 30, 60, 90];
+    const rY = [50, 0, -50, -100, -50, 0, 50];
+    const center = Math.floor(angle.length / 2);
+
+    const rolling = () => {
+      let rollingFan = document.querySelector('.rollingFan') as HTMLElement | null;
+      let fan = rollingFan?.querySelectorAll('span') as NodeListOf<HTMLElement> | null;
+
+      fan?.forEach((el, i) => {
+        const options: GSAPTweenVars = {
+          duration: 0.4,
+          rotation: angle[i],
+          y: rY[i],
+          x: Math.ceil(el.clientWidth * (i - 3)),
+          overwrite: true,
+          // stagger: 0.3,
+          delay: i * 0.1,
+          ease: 'power2.out',
+          onComplete(){
+            el.style.zIndex = i ===  center ? 10 : i < center ? i : angle.length - i;
+            el.style.opacity = '1';
+            
+            if(i === 3) el.classList.add('active');
+            else el.classList.remove('active');
+          }
+        };
+
+        if(i < angle.length) gsap.to(el, options);
+        else gsap.set(el, {opacity:0});
+      });
+
+      function rafTimeout(callback: () => void, delay : number) {
+        const start = performance.now();
+        function loop(now: number) {
+          if (now - start >= delay) {
+            callback();
+          } else {
+            requestAnimationFrame(loop);
+          }
+        }
+        requestAnimationFrame(loop);
+      }
+
+      rafTimeout(() => {
+        document.querySelector('.rollingFan')?.append(fan[0]);
+        fan[0].style.opacity = '0';
+
+        rolling();
+      }, 3000);
+    }  
+    
+    rolling();
+  };
   const init = () => {
     try {
       Performance.start('init');
@@ -873,6 +1061,8 @@ export default function CommonFunction(): CommonFunctionReturn {
     animate,
     toggleTheme,
     copyToClipboard,
+    scrollAnimation,
+    rollingFanAnimation,
     toastPopup,
     // horizonScrollMotion,
     // countRating,

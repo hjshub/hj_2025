@@ -1,7 +1,7 @@
 <template>
   <section id="section-04" class="section-04">
     <div class="inner">
-      <h2 lang="en" class="heading-tit-wrap align-c r-tit">
+      <h2 lang="en" class="heading-tit-wrap align-c r-tit hidden-txt">
         <strong><i>p</i><i>o</i><i>r</i><i>t</i><i>f</i><i>o</i><i>l</i><i>i</i><i>o</i></strong>
       </h2>
       <div v-if="false" class="flex--wrap jf-end">
