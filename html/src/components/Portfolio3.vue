@@ -1,15 +1,14 @@
 <template>
     <section class="p-0">
-        <div class="rollingFan">
+        <div class="rollingFan2">
             <span v-for="item in projects" :key="item.id" :name = "item.name" 
             :style="{
                 backgroundImage: item.imgSrc
                 ? `url('./images/thumbnail/${item.imgSrc}')`
                 : `url('./images/thumbnail/no-image.jpg')`,
-                backgroundSize: 'cover',
+                backgroundSize: '120% 120%',
                 backgroundPosition: 'center'
             }">
-                <!-- <img :src="item.imgSrc ? `./images/thumbnail/${item.imgSrc}` : './images/thumbnail/no-image.jpg'" :alt="item.name"> -->
             </span>
             <em v-for="item in projects" :key="item.id">{{ item.name }}</em>
         </div>
@@ -23,7 +22,6 @@ import CommonFunction from '../assets/ts/common'
 
 const common = CommonFunction()
 const scrollAnimation = common.scrollAnimation;
-const rollingFanAnimation = common.rollingFanAnimation;
 const projects = ref<any[]>([])
 
 const axiosListUp = async () => {
@@ -43,7 +41,6 @@ onMounted(async () => {
     
         // DOM 업데이트 후 애니메이션 실행
         await nextTick();
-        // rollingFanAnimation();
         scrollAnimation();
     } catch (error) {
         console.error('Failed to load projects:', error)
@@ -53,28 +50,8 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-    .rollingFan {
+    .rollingFan2 {
         @apply w-[100%] h-[100%] relative;
-        
-        // span {
-        //     @apply w-[54vw] h-[75vw] flex items-center justify-center flex-col absolute top-[30vw] left-[23vw] bg-white text-black font-[3rem];
-        //     border:1px solid #ccc;
-        //     border-radius:20px;
-        //     overflow:hidden;
-
-        //     &:before {
-        //         content: attr(name);
-        //         @apply flex items-center justify-center w-[100%] h-[100%] absolute top-0 left-0 z-[1] text-[0] dark:bg-[rgba(0,0,0,0.4)] bg-[rgba(255,255,255,0.4)] backdrop-blur-[2px];
-        //     }
-
-        //     em {
-        //         display:none;
-        //     }
-            
-        //     &.active:before {
-        //         @apply bg-[rgba(0,0,0,0.4)] dark:bg-[rgba(255,255,255,0.4)] text-indigo-100 dark:text-white text-[2.4rem] font-montserrat font-bold;
-        //     }
-        // }
 
         span {
             width:100vw;
@@ -86,6 +63,9 @@ onMounted(async () => {
                 content: '';
                 @apply w-[100%] h-[100%] absolute top-0 left-0 pointer-events-none bg-[rgba(0,0,0,0.2)] dark:bg-[rgba(255,255,255,0.4)] backdrop-blur-[2px];
             }
+
+            transition: backgroundSize 0.05s linear;
+            will-change: backgroundSize;
         }
         em {
             width:100%;
@@ -101,5 +81,4 @@ onMounted(async () => {
             @apply fixed top-0 left-0 bg-black text-white text-[1rem] p-1 z-[100000];
         }
     }
-
 </style>

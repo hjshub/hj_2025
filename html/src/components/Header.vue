@@ -40,6 +40,8 @@ const menuItems = [
   // { href: '/about', text: 'abolut' },
   // { href: '/skill', text: 'skill inventory' },
   { href: '/portfolio', text: 'portfolio' },
+  // { href: '/portfolio2', text: '2' },
+  // { href: '/portfolio3', text: '3' },
   // { href: '/contact', text: 'contact' }
 ]
 

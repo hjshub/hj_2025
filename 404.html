@@ -1,7 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0;url=./" />
+    <meta charset="utf-8">
+    <title>Redirecting…</title>
+    <script>
+      // GitHub Pages SPA redirect script
+      var redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      if (redirect && redirect !== location.href) {
+        history.replaceState(null, null, redirect);
+      }
+    </script>
   </head>
-  <body></body>
+  <body>
+    <script>
+      sessionStorage.redirect = location.href;
+      location.replace("/hj_2025/");
+    </script>
+  </body>
 </html>

@@ -841,14 +841,14 @@ export default function CommonFunction(): CommonFunctionReturn {
   }
   const scrollAnimation = () => {
       // ScrollTrigger.refresh(true);
-      // const spanEl = gsap.utils.toArray('.rollingFan span');
+      // const spanEl = gsap.utils.toArray('.rollingFan2 span');
 
-      const spanEl = document.querySelectorAll('.rollingFan span') as NodeListOf<HTMLElement>;
-      const em = document.querySelectorAll('.rollingFan em') as NodeListOf<HTMLElement>;
+      const spanEl = document.querySelectorAll('.rollingFan2 span') as NodeListOf<HTMLElement>;
+      const em = document.querySelectorAll('.rollingFan2 em') as NodeListOf<HTMLElement>;
       const scroller = document.querySelector('#layout') as HTMLElement | null;
       const vw = window.innerWidth;
       const scrollerH = scroller?.offsetHeight ?? window.innerHeight;
-      const gap =  ((0.015*vw) / scrollerH).toFixed(2);
+      const gap =  ((0.03*vw) / scrollerH).toFixed(2);
       const start = 50 - (gap*100);
       const end = 50 + (gap*100);
 
@@ -863,12 +863,12 @@ export default function CommonFunction(): CommonFunctionReturn {
                 trigger: el,
                 // toggleActions: 'restart pause reverse pause', // scrub: false 일 때 사용
                 scroller : scroller,
-                markers: {
-                  startColor: 'red',
-                  endColor: 'blue',
-                  fontSize: '16px',
-                  // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
-                },
+                // markers: {
+                //   startColor: 'red',
+                //   endColor: 'blue',
+                //   fontSize: '16px',
+                //   // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+                // },
                 start: () => `top ${start}%`,
                 end :  () => `bottom ${end}%`,
                 scrub: true,
@@ -880,18 +880,22 @@ export default function CommonFunction(): CommonFunctionReturn {
                 onEnter() { 
                   // childeEl && (childeEl.style.clipPath = `inset(0 0 0 0)`);
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
+                  childeEl && (childeEl.style.backgroundSize = `100% 100%`);
                 },
                 onLeave() {
                   // childeEl && (childeEl.style.clipPath = `inset(0 0 100% 0)`);
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
+                  childeEl && (childeEl.style.backgroundSize = `120% 120%`);
                 },
                 onEnterBack() { 
                   // childeEl && (childeEl.style.clipPath = 'inset(0 0 0 0)');
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
+                  childeEl && (childeEl.style.backgroundSize = `100% 100%`);
                 },
                 onLeaveBack() { 
                   // childeEl && (childeEl.style.clipPath = 'inset(0 0 100% 0)');
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
+                  childeEl && (childeEl.style.backgroundSize = `120% 120%`);
                 }
             }
         });
