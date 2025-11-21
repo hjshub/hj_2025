@@ -840,9 +840,6 @@ export default function CommonFunction(): CommonFunctionReturn {
     }
   }
   const scrollAnimation = () => {
-      // ScrollTrigger.refresh(true);
-      // const spanEl = gsap.utils.toArray('.rollingFan2 span');
-
       const spanEl = document.querySelectorAll('.rollingFan2 span') as NodeListOf<HTMLElement>;
       const em = document.querySelectorAll('.rollingFan2 em') as NodeListOf<HTMLElement>;
       const scroller = document.querySelector('#layout') as HTMLElement | null;
@@ -869,33 +866,25 @@ export default function CommonFunction(): CommonFunctionReturn {
                 //   fontSize: '16px',
                 //   // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
                 // },
-                start: () => `top ${start}%`,
-                end :  () => `bottom ${end}%`,
+                start: () => `top 50%`,
+                end :  () => `bottom 50%`,
                 scrub: true,
                 onUpdate(self){
                   // document.documentElement.style.setProperty('--top', String(document.getElementById('gnb')?.clientHeight + 'px'));
                   // -> 트리거 span(el) 단위로 변수 설정
-                  // childeEl?.style.setProperty('--scrProgress', String(1 - self.progress));
+                  el.style.setProperty('--scrProgress', String(self.progress));
                 },
                 onEnter() { 
-                  // childeEl && (childeEl.style.clipPath = `inset(0 0 0 0)`);
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
-                  childeEl && (childeEl.style.backgroundSize = `100% 100%`);
                 },
                 onLeave() {
-                  // childeEl && (childeEl.style.clipPath = `inset(0 0 100% 0)`);
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
-                  childeEl && (childeEl.style.backgroundSize = `120% 120%`);
                 },
                 onEnterBack() { 
-                  // childeEl && (childeEl.style.clipPath = 'inset(0 0 0 0)');
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
-                  childeEl && (childeEl.style.backgroundSize = `100% 100%`);
                 },
                 onLeaveBack() { 
-                  // childeEl && (childeEl.style.clipPath = 'inset(0 0 100% 0)');
                   childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
-                  childeEl && (childeEl.style.backgroundSize = `120% 120%`);
                 }
             }
         });

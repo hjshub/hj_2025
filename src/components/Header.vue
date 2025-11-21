@@ -39,9 +39,7 @@ const menuItems = [
   { href: '/', text: 'home' },
   // { href: '/about', text: 'abolut' },
   // { href: '/skill', text: 'skill inventory' },
-  { href: '/portfolio', text: 'portfolio' },
-  // { href: '/portfolio2', text: '2' },
-  // { href: '/portfolio3', text: '3' },
+  { href: isMob ? '/portfolio3' : '/portfolio', text: 'portfolio' },
   // { href: '/contact', text: 'contact' }
 ]
 

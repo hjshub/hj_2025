@@ -1,5 +1,5 @@
 <template>
-    <section class="p-0">
+    <section>
         <div class="rollingFan">
             <span v-for="item in projects" :key="item.id" :name = "item.name" 
             :style="{

@@ -6,8 +6,9 @@
                 backgroundImage: item.imgSrc
                 ? `url('./images/thumbnail/${item.imgSrc}')`
                 : `url('./images/thumbnail/no-image.jpg')`,
-                backgroundSize: '120% 120%',
-                backgroundPosition: 'center'
+                backgroundSize: 'auto 120%',
+                backgroundPositionX: '50%',
+                backgroundPositionY: 'calc(var(--scrProgress, 0) * 100%)'
             }">
             </span>
             <em v-for="item in projects" :key="item.id">{{ item.name }}</em>
@@ -57,15 +58,14 @@ onMounted(async () => {
             width:100vw;
             height:calc(var(--vh, 1vh) * 80);
             @apply relative flex items-center justify-center text-[5rem] text-white;
-            // --scrProgress : 0;
 
             &:before {
                 content: '';
-                @apply w-[100%] h-[100%] absolute top-0 left-0 pointer-events-none bg-[rgba(0,0,0,0.2)] dark:bg-[rgba(255,255,255,0.4)] backdrop-blur-[2px];
+                @apply w-[100%] h-[100%] absolute top-0 left-0 pointer-events-none bg-[rgba(0,0,0,0.3)] dark:bg-[rgba(255,255,255,0.4)] backdrop-blur-[2px];
             }
 
-            transition: backgroundSize 0.05s linear;
-            will-change: backgroundSize;
+            transition: background-position-y 0.07s linear;
+            will-change: background-position-y;
         }
         em {
             width:100%;
