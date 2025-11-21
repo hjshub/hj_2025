@@ -62,7 +62,7 @@ export default defineConfig(({ command }) => ({
     devSourcemap: false
   },
   build: {
-    outDir: 'dist',
+    outDir: 'docs',
     assetsDir: 'assets',
     sourcemap: false,
     chunkSizeWarningLimit: 1500,
