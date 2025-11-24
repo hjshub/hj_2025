@@ -10,8 +10,9 @@
                 backgroundPositionX: '50%',
                 backgroundPositionY: 'calc(var(--scrProgress, 0) * 100%)'
             }">
+            <!-- <i style="position:absolute; top:50%; left:20px; z-index:999999; font-size:12px;"></i> -->
             </span>
-            <em v-for="item in projects" :key="item.id">{{ item.name }}</em>
+            <em v-for="item in projects" :key="item.id" :name = "item.name"></em>
         </div>
     </section>
 </template>
@@ -70,11 +71,16 @@ onMounted(async () => {
         em {
             width:100%;
             height:calc(var(--vh, 1vh) * 100);
-            @apply flex items-center justify-center fixed pointer-events-none top-[0] text-indigo-100 dark:text-white text-[6vw] font-montserrat font-bold;
-            
-            clip-path: inset(0 0 100% 0);
-            transition: clip-path 0.05s linear;
+            @apply flex items-center justify-center fixed pointer-events-none top-[0];
+            clip-path: inset(var(--clipT, 50%) 0 var(--clipB, 50%) 0);
+            transition: clip-path 0.07s linear;
             will-change: clip-path;
+
+            &:before {
+                @apply text-indigo-100 dark:text-white text-[6vw] font-montserrat font-bold;
+                line-height:1;
+                content:attr(name);
+            }
         }
 
         .test {

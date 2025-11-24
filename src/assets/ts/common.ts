@@ -841,19 +841,16 @@ export default function CommonFunction(): CommonFunctionReturn {
   }
   const scrollAnimation = () => {
       const spanEl = document.querySelectorAll('.rollingFan2 span') as NodeListOf<HTMLElement>;
-      const em = document.querySelectorAll('.rollingFan2 em') as NodeListOf<HTMLElement>;
+      const cover = document.querySelectorAll('.rollingFan2 em') as NodeListOf<HTMLElement>;
       const scroller = document.querySelector('#layout') as HTMLElement | null;
       const vw = window.innerWidth;
       const scrollerH = scroller?.offsetHeight ?? window.innerHeight;
-      const gap =  ((0.03*vw) / scrollerH).toFixed(2);
+      const gap =  (0.05*vw) / scrollerH;
       const start = 50 - (gap*100);
       const end = 50 + (gap*100);
 
       spanEl.forEach((el, i) => {
-        const childeEl = em[i] as HTMLElement | null;
-        const prev = childeEl?.previousElementSibling;
-        const next = childeEl?.nextElementSibling;
-        
+        const _cover = cover[i] as HTMLElement | null;
         gsap.to(el, {
             ease: "none",
             scrollTrigger: {
@@ -866,26 +863,30 @@ export default function CommonFunction(): CommonFunctionReturn {
                 //   fontSize: '16px',
                 //   // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
                 // },
-                start: () => `top 50%`,
-                end :  () => `bottom 50%`,
+                start: () => `top ${end}%`,
+                end :  () => `bottom ${start}%`,
                 scrub: true,
                 onUpdate(self){
                   // document.documentElement.style.setProperty('--top', String(document.getElementById('gnb')?.clientHeight + 'px'));
+
                   // -> 트리거 span(el) 단위로 변수 설정
                   el.style.setProperty('--scrProgress', String(self.progress));
+                  _cover?.style.setProperty('--clipT', String((1 - self.progress) * end) + '%');
+                  _cover?.style.setProperty('--clipB', String(self.progress * end) + '%');
+                  // el.querySelector('i').innerHTML = `start: ${(1 - self.progress) * end}, <br /> end: ${self.progress * end} <br /> total: ${start + end}`;
                 },
-                onEnter() { 
-                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
-                },
-                onLeave() {
-                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
-                },
-                onEnterBack() { 
-                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${start}% 0)`);
-                },
-                onLeaveBack() { 
-                  childeEl && (childeEl.style.clipPath = `inset(0 0 ${end}% 0)`);
-                }
+                // onEnter() { 
+                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${start}% 0)`);
+                // },
+                // onLeave() {
+                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${end}% 0)`);
+                // },
+                // onEnterBack() { 
+                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${start}% 0)`);
+                // },
+                // onLeaveBack() { 
+                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${end}% 0)`);
+                // }
             }
         });
         // console.log(el.getBoundingClientRect().top);
