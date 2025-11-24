@@ -72,7 +72,7 @@ onMounted(async () => {
             width:100%;
             height:calc(var(--vh, 1vh) * 100);
             @apply flex items-center justify-center fixed pointer-events-none top-[0];
-            clip-path: inset(var(--clipT, 50%) 0 var(--clipB, 50%) 0);
+            clip-path: inset(var(--clipT, 100%) 0 var(--clipB, 100%) 0);
             transition: clip-path 0.07s linear;
             will-change: clip-path;
 
@@ -81,10 +81,6 @@ onMounted(async () => {
                 line-height:1;
                 content:attr(name);
             }
-        }
-
-        .test {
-            @apply fixed top-0 left-0 bg-black text-white text-[1rem] p-1 z-[100000];
         }
     }
 </style>
