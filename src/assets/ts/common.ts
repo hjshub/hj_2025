@@ -843,11 +843,10 @@ export default function CommonFunction(): CommonFunctionReturn {
       const spanEl = document.querySelectorAll('.rollingFan2 span') as NodeListOf<HTMLElement>;
       const cover = document.querySelectorAll('.rollingFan2 em') as NodeListOf<HTMLElement>;
       const scroller = document.querySelector('#layout') as HTMLElement | null;
-      const vw = window.innerWidth;
+      const vwPx = window.innerWidth*0.01;
       const scrollerH = scroller?.offsetHeight ?? window.innerHeight;
-      const gap =  (0.05*vw) / scrollerH;
-      const start = 50 - (gap*100);
-      const end = 50 + (gap*100);
+      const gap = (n : number) => n*vwPx;
+      const gapPercent = (n : number) => gap(n) / scrollerH * 100;
 
       spanEl.forEach((el, i) => {
         const _cover = cover[i] as HTMLElement | null;
@@ -857,39 +856,28 @@ export default function CommonFunction(): CommonFunctionReturn {
                 trigger: el,
                 // toggleActions: 'restart pause reverse pause', // scrub: false 일 때 사용
                 scroller : scroller,
-                // markers: {
-                //   startColor: 'red',
-                //   endColor: 'blue',
-                //   fontSize: '16px',
-                //   // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
-                // },
-                start: () => `top ${end}%`,
-                end :  () => `bottom ${start}%`,
+                markers: {
+                  startColor: 'red',
+                  endColor: 'blue',
+                  fontSize: '16px',
+                  // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+                },
+                start: () => `top ${50 + gapPercent(5)}%`,
+                end :  () => `bottom ${50 - gapPercent(5)}%`,
                 scrub: true,
                 onUpdate(self){
-                  // document.documentElement.style.setProperty('--top', String(document.getElementById('gnb')?.clientHeight + 'px'));
-
                   // -> 트리거 span(el) 단위로 변수 설정
                   el.style.setProperty('--scrProgress', String(self.progress));
-                  _cover?.style.setProperty('--clipT', String((1 - self.progress) * end) + '%');
-                  _cover?.style.setProperty('--clipB', String(self.progress * end) + '%');
-                  // el.querySelector('i').innerHTML = `start: ${(1 - self.progress) * end}, <br /> end: ${self.progress * end} <br /> total: ${start + end}`;
+
+                  // const roundProgress = Math.round(self.progress * 100) / 100; // 소수점 2자리 반올림
+                  const clipT = (1 - self.progress) * (50 + gapPercent(3));
+                  const clipB = self.progress * (50 + gapPercent(3));
+
+                  _cover?.style.setProperty('--clipT', `${clipT}%`);
+                  _cover?.style.setProperty('--clipB', `${clipB}%`);
                 },
-                // onEnter() { 
-                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${start}% 0)`);
-                // },
-                // onLeave() {
-                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${end}% 0)`);
-                // },
-                // onEnterBack() { 
-                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${start}% 0)`);
-                // },
-                // onLeaveBack() { 
-                //   // _cover && (_cover.style.clipPath = `inset(0 0 ${end}% 0)`);
-                // }
             }
         });
-        // console.log(el.getBoundingClientRect().top);
       });
       // console.log(ScrollTrigger.getAll().length);
       // ScrollTrigger.getAll().forEach(t => console.log(t.trigger, t.start, t.end));
