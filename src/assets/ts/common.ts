@@ -856,12 +856,12 @@ export default function CommonFunction(): CommonFunctionReturn {
                 trigger: el,
                 // toggleActions: 'restart pause reverse pause', // scrub: false 일 때 사용
                 scroller : scroller,
-                markers: {
-                  startColor: 'red',
-                  endColor: 'blue',
-                  fontSize: '16px',
-                  // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
-                },
+                // markers: {
+                //   startColor: 'red',
+                //   endColor: 'blue',
+                //   fontSize: '16px',
+                //   // indent: 1 + i * 8   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+                // },
                 start: () => `top ${50 + gapPercent(5)}%`,
                 end :  () => `bottom ${50 - gapPercent(5)}%`,
                 scrub: true,
