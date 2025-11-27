@@ -20,7 +20,7 @@
       </div>
       <div class="intro-box2">
         <div class="flex--wrap column intro-2">
-          <span><b class="countY"></b>년 차</span>
+          <span><b class="countY">0</b>년 차</span>
           <strong>웹 퍼블리셔</strong>
           <span>김효주 입니다.</span>
         </div>
@@ -261,7 +261,7 @@ const introMotion = () => {
     alpha: 0,
     duration: 1,
     scale: 0.5,
-  }, '+=3')
+  }, '+=2')
   .to('.intro-2', {
     alpha: 1,
     duration: 1,
@@ -287,7 +287,9 @@ const introMotion = () => {
     xPercent: -100,
     stagger: 0.2,
     onComplete(){
-      common.countYear('2015/10/26');
+      setTimeout(() => {
+        common.countYear('2015/10/26')
+      }, 500);
     }
   }, '<')
   .to('.intro-2 > *', {
