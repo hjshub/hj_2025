@@ -72,7 +72,7 @@ onMounted(async () => {
             width:100%;
             height:calc(var(--vh, 1vh) * 100);
             @apply flex items-center justify-center fixed pointer-events-none top-[0];
-            clip-path: inset(var(--clipT, 100%) 0 var(--clipB, 100%) 0);
+            clip-path: inset(var(--clipT, 0) 0 var(--clipB, calc(50% + 3vw)) 0);
             transition: clip-path 0.07s linear;
             will-change: clip-path;
 

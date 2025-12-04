@@ -15,7 +15,6 @@
           </li>
         </ul>
         <div class="scrollGage" :style="{ width : scrollProgress + '%'}"></div>
-        <div class="bg-black text-white ddd"></div>
       </div>
     </div>
   </header>

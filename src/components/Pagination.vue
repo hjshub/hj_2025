@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+// <script setup>에서는 최상위(top-level)에 선언된 모든 것(변수, 함수, import)이 자동으로 템플릿에 노출
 import { defineProps, defineEmits } from 'vue'
 // isMob prop 추가
 const props = defineProps({
@@ -23,6 +24,24 @@ const props = defineProps({
   totalPages: { type: Number, required: true },
   isMob: { type: Boolean, default: false } // <-- 모바일 여부
 })
+
+// [참고]
+// 중요한 점: defineProps()에서 바로 구조분해하면 반응성(reactivity)을 잃음 — 즉 스냅샷(초기값)만 가져오므로 이후 변경이 템플릿에 반영되지 않음.
+// 위험: 반응성 잃음 (스냅샷)
+// const props = defineProps({ currentPage: Number });
+// const { currentPage } = props; // 이렇게 구조분해 하면 reactive가 사라짐
+
+
+// 유지 방법 1: toRefs 사용 (추천)
+// import { toRefs } from 'vue';
+// const props = defineProps({ currentPage: Number });
+// const { currentPage } = toRefs(props); // currentPage는 ref가 됨, 템플릿에서 바로 사용 가능
+
+// 유지 방법 2: computed 사용
+// import { computed } from 'vue';
+// const props = defineProps({ currentPage: Number });
+// const currentPage = computed(() => props.currentPage);
+
 defineEmits(['update:currentPage'])
 </script>
 
