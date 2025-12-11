@@ -97,7 +97,10 @@ const common = CommonFunction()
 const selectedCategory = ref('')
 const projects = ref<any[]>([])
 const filteredProjects = ref<any[]>([])
-const isMob = common.isMob()
+
+const props = defineProps({
+  isMob: { type: Boolean, default: false }
+})
 
 let pollingInterval: number | undefined = undefined;
 let lastFetchedData: any = null;
@@ -106,13 +109,13 @@ const deepEqual = (a: any, b: any) => JSON.stringify(a) === JSON.stringify(b);
 
 // 페이지네이션 관련 변수 및 계산식 추가
 const currentPage = ref(1) // 현재 페이지 번호 (초기값은 1)
-const itemsPerPage = isMob ? 5 : 10; // 한 페이지당 보여줄 아이템 수
-const totalPages = computed(() => Math.ceil(filteredProjects.value.length / itemsPerPage)) // 전체 페이지 수
+const itemsPerPage = computed(() => props.isMob ? 5 : 10) // 한 페이지당 보여줄 아이템 수
+const totalPages = computed(() => Math.ceil(filteredProjects.value.length / itemsPerPage.value)) // 전체 페이지 수
 
 // 현재 페이지에 해당하는 프로젝트만 추출
 const paginatedProjects = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage
-  return filteredProjects.value.slice(start, start + itemsPerPage)
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  return filteredProjects.value.slice(start, start + itemsPerPage.value)
 })
 
 // 페이지네이션 컴포넌트에서 페이지 변경 시 호출되는 함수

@@ -456,7 +456,39 @@ const sceneNavigation = {
     }
   },
 
-  gotoScene(idx : number){ // scene 이동
+  // scene 이동 async로 변경
+  async gotoScene(idx : number){ // scene 이동
+    isPlaying.value = true;
+    autoPlay.value = false;
+    currentSceneIndex.value = idx;
+
+    const reverseTimelines = async () => {
+      for(let i = timelines.length - 1; i >= 0; i--) {
+        await new Promise<void>(resolve => {
+          setTimeout(() => {
+            timelines[i].timeScale(10);
+            timelines[i].progress(0).pause();
+            resolve();
+          }, 10 * (timelines.length - 1 - i));
+        });
+      }
+    };
+
+    try {
+      await reverseTimelines();
+      await nextTick();
+
+      timelines[currentSceneIndex.value].timeScale(1);
+      timelines[currentSceneIndex.value].play(0);
+      timelines.forEach(el => el.timeScale(1));
+      autoPlay.value = true;
+    } catch (e) {
+      console.error('gotoScene error', e);
+    }
+  },
+
+  // 기존 scene 이동 함수 
+  gotoScene2(idx : number){ // scene 이동
     isPlaying.value = true;
     autoPlay.value = false;
     currentSceneIndex.value = idx;
