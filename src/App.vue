@@ -38,7 +38,6 @@ const debounce = (fn : () => void, wait : number = 120) => (() => {
 
 // 리사이즈 발생 시 isMob 업데이트하고, 현재 라우트가 portfolio 계열이면 필요시 리다이렉트
 const doResize = async () => {
-  alert(window.innerWidth);
   const now = window.innerWidth < 821
   if (now === prevIsMob) return // 실제 변경이 없으면 빠져나감
   prevIsMob = now
@@ -47,7 +46,7 @@ const doResize = async () => {
   // 현재 라우트가 정확히 portfolio 또는 portfolio3 인 경우에만 처리
   const path = route.path || ''
   const name = String(route.name || '')
-  const isPortfolioRoute = (path === '/portfolio' || path === '/portfolio3' || name === 'Portfolio' || name === 'Portfolio3')
+  const isPortfolioRoute = (path === '/portfolio' || path === '/portfolio3' || name === 'portfolio' || name === 'portfolio3')
 
   if (!isPortfolioRoute) return
 
