@@ -44,36 +44,36 @@ const doResize = async () => {
   isMob.value = now
 
   // 현재 라우트가 정확히 portfolio 또는 portfolio3 인 경우에만 처리
-  const path = route.path || ''
-  const name = String(route.name || '')
-  const isPortfolioRoute = (path === '/portfolio' || path === '/portfolio3' || name === 'portfolio' || name === 'portfolio3')
+  // const path = route.path || ''
+  // const name = String(route.name || '')
+  // const isPortfolioRoute = (path === '/portfolio' || path === '/portfolio3' || name === 'portfolio' || name === 'portfolio3')
 
-  if (!isPortfolioRoute) return
+  // if (!isPortfolioRoute) return
 
-  const target = isMob.value ? '/portfolio3' : '/portfolio'
+  // const target = isMob.value ? '/portfolio3' : '/portfolio'
 
-  if (path === target) return
+  // if (path === target) return
 
-  try {
-    await router.replace({ path: target })  // 네비게이션 대기
-    await nextTick()                        // DOM 안정화 대기
+  // try {
+  //   await router.replace({ path: target })  // 네비게이션 대기
+  //   await nextTick()                        // DOM 안정화 대기
 
-    // 스크롤 리셋(필요시)
-    const layoutEl = document.getElementById('layout') || document.documentElement
-    if (layoutEl) layoutEl.scrollTop = 0
+  //   // 스크롤 리셋(필요시)
+  //   const layoutEl = document.getElementById('layout') || document.documentElement
+  //   if (layoutEl) layoutEl.scrollTop = 0
 
-    // GSAP / ScrollTrigger 정리
-    const ST = (window as any).ScrollTrigger
-    ST?.getAll()?.forEach((t: any) => t.kill && t.kill())
-    ST?.refresh && ST.refresh()
+  //   // GSAP / ScrollTrigger 정리
+  //   const ST = (window as any).ScrollTrigger
+  //   ST?.getAll()?.forEach((t: any) => t.kill && t.kill())
+  //   ST?.refresh && ST.refresh()
 
-    // 공통 초기화 함수가 있으면 호출
-    common?.setViewportHeight && common.setViewportHeight()
-    common?.animate && common.animate()
-  } catch (e) {
-    // 네비게이션 취소 등 안전하게 무시
-    console.warn('redirect failed/cancelled', e)
-  }
+  //   // 공통 초기화 함수가 있으면 호출
+  //   common?.setViewportHeight && common.setViewportHeight()
+  //   common?.animate && common.animate()
+  // } catch (e) {
+  //   // 네비게이션 취소 등 안전하게 무시
+  //   console.warn('redirect failed/cancelled', e)
+  // }
 }
 
 const handleResize = debounce(doResize, 120);
