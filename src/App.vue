@@ -21,62 +21,64 @@ const router = useRouter();
 const route = useRoute();
 
 const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
-const isMob = ref(window.innerWidth < 821);
+const isMob = ref(window.innerWidth < 440);
 const common = CommonFunction();
 
-let resizeTimer : any = null
 let prevIsMob = isMob.value
 
 // debounce 함수
-const debounce = (fn : () => void, wait : number = 120) => (() => {
-  if (resizeTimer !== null) clearTimeout(resizeTimer)
-  resizeTimer = window.setTimeout(() => {
-    fn()
-    resizeTimer = null
-  }, wait)
-})
+const createDebounce = (fn : () => void, wait : number = 120) => {
+  let timer: number | null = null
+  return () => {
+    if (timer !== null) clearTimeout(timer)
+    timer = window.setTimeout(() => {
+      fn()
+      timer = null
+    }, wait)
+  }
+}
 
 // 리사이즈 발생 시 isMob 업데이트하고, 현재 라우트가 portfolio 계열이면 필요시 리다이렉트
-const doResize = async () => {
-  const now = window.innerWidth < 821
+const doResize = () => {
+  const now = window.innerWidth < 440
   if (now === prevIsMob) return // 실제 변경이 없으면 빠져나감
   prevIsMob = now
   isMob.value = now
 
   // 현재 라우트가 정확히 portfolio 또는 portfolio3 인 경우에만 처리
-  // const path = route.path || ''
-  // const name = String(route.name || '')
-  // const isPortfolioRoute = (path === '/portfolio' || path === '/portfolio3' || name === 'portfolio' || name === 'portfolio3')
+  const path = route.path || ''
+  const name = String(route.name || '')
+  const isPortfolioRoute = (path === '/portfolio' || path === '/portfolio3' || name === 'portfolio' || name === 'portfolio3')
 
-  // if (!isPortfolioRoute) return
+  if (!isPortfolioRoute) return
 
-  // const target = isMob.value ? '/portfolio3' : '/portfolio'
+  const target = isMob.value ? '/portfolio3' : '/portfolio'
 
-  // if (path === target) return
+  if (path === target) return
 
-  // try {
-  //   await router.replace({ path: target })  // 네비게이션 대기
-  //   await nextTick()                        // DOM 안정화 대기
+  // 비동기 리다이렉트 처리
+  router.replace({ path: target }).then(() => {
+    nextTick(() => {
+      // 스크롤 리셋(필요시)
+      const layoutEl = document.getElementById('layout') || document.documentElement
+      if (layoutEl) layoutEl.scrollTop = 0
 
-  //   // 스크롤 리셋(필요시)
-  //   const layoutEl = document.getElementById('layout') || document.documentElement
-  //   if (layoutEl) layoutEl.scrollTop = 0
+      // GSAP / ScrollTrigger 정리
+      const ST = (window as any).ScrollTrigger
+      ST?.getAll()?.forEach((t: any) => t.kill && t.kill())
+      ST?.refresh && ST.refresh()
 
-  //   // GSAP / ScrollTrigger 정리
-  //   const ST = (window as any).ScrollTrigger
-  //   ST?.getAll()?.forEach((t: any) => t.kill && t.kill())
-  //   ST?.refresh && ST.refresh()
-
-  //   // 공통 초기화 함수가 있으면 호출
-  //   common?.setViewportHeight && common.setViewportHeight()
-  //   common?.animate && common.animate()
-  // } catch (e) {
-  //   // 네비게이션 취소 등 안전하게 무시
-  //   console.warn('redirect failed/cancelled', e)
-  // }
+      // 공통 초기화 함수가 있으면 호출
+      common?.setViewportHeight && common.setViewportHeight()
+      common?.animate && common.animate()
+    })
+  }).catch((e) => {
+    // 네비게이션 취소 등 안전하게 무시
+    console.warn('redirect failed/cancelled', e)
+  })
 }
 
-const handleResize = debounce(doResize, 120);
+const handleResize = createDebounce(doResize, 120)
 
 const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value
