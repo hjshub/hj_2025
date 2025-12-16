@@ -24,9 +24,6 @@ const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
 const isMob = ref(window.innerWidth < 821);
 const common = CommonFunction();
 
-let prevIsMob = isMob.value
-let isRedirecting = false  // 리다이렉트 중복 방지
-
 // debounce 함수
 const createDebounce = (fn : () => void, wait : number = 120) => {
   let timer: number | null = null
@@ -39,46 +36,39 @@ const createDebounce = (fn : () => void, wait : number = 120) => {
   }
 }
 
-// 리사이즈 발생 시 isMob 업데이트하고, 현재 라우트가 portfolio 계열이면 필요시 리다이렉트
+// 리사이즈 발생 시 isMob 업데이트하고, 
+// 현재 라우트가 portfolio 계열이면 필요시 리다이렉트
 const doResize = () => {
-  const now = window.innerWidth < 821
-  if (now === prevIsMob) return // 실제 변경이 없으면 빠져나감
-  
-  // 리다이렉트 중이면 추가 호출 방지
-  if (isRedirecting) {
-    console.log('Already redirecting, skip')
-    return
-  }
-
-  prevIsMob = now
-  isMob.value = now
+  const shouldBeMobile = window.innerWidth < 821
+  isMob.value = shouldBeMobile
 
   // 디버그 로그
-  console.log('resize detected:', { width: window.innerWidth, isMob: now, route: route.path })
+  console.log('resize detected:', { width: window.innerWidth, isMob: shouldBeMobile, route: route.path })
 
   // 현재 라우트가 정확히 portfolio 또는 portfolio3 인 경우에만 처리
-  const path = route.path || ''
-  const name = String(route.name || '')
-  const isPortfolioRoute = (path === '/portfolio' || path === '/portfolio3' || name === 'portfolio' || name === 'portfolio3')
+  const currentPath = route.path || ''
+  const isPortfolioRoute = currentPath === '/portfolio' || currentPath === '/portfolio3'
 
   if (!isPortfolioRoute) {
-    console.log('Not a portfolio route:', path)
+    console.log('Not a portfolio route:', currentPath)
     return
   }
 
-  const target = isMob.value ? '/portfolio3' : '/portfolio'
-
-  if (path === target) {
-    console.log('Already on target route:', target)
+  // 현재 width와 라우트의 불일치 확인
+  const isCurrentlyMobileRoute = currentPath === '/portfolio3'
+  
+  // 상태가 일치하면 리다이렉트 불필요
+  if (shouldBeMobile === isCurrentlyMobileRoute) {
+    console.log('Current route matches screen size, no redirect needed')
     return
   }
 
-  console.log('Redirecting to:', target)
-  isRedirecting = true
+  const target = shouldBeMobile ? '/portfolio3' : '/portfolio'
+  console.log('Redirecting to:', target, '(shouldBeMobile:', shouldBeMobile, ')')
 
   // 비동기 리다이렉트 처리
   router.replace({ path: target }).then(() => {
-    console.log('Redirect successful')
+    console.log('Redirect successful to:', target)
     nextTick(() => {
       // 스크롤 리셋(필요시)
       const layoutEl = document.getElementById('layout') || document.documentElement
@@ -92,13 +82,10 @@ const doResize = () => {
       // 공통 초기화 함수가 있으면 호출
       common?.setViewportHeight && common.setViewportHeight()
       common?.animate && common.animate()
-
-      isRedirecting = false  // 완료 후 플래그 해제
     })
   }).catch((e) => {
     // 네비게이션 취소 등 안전하게 무시
     console.warn('redirect failed/cancelled', e)
-    isRedirecting = false  // 실패해도 플래그 해제
   })
 }
 
@@ -115,7 +102,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
-  // if (timer !== null) clearTimeout(timer)
 })
 
 </script>

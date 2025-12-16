@@ -39,6 +39,11 @@ const router = createRouter({
       name: 'portfolio3',
       component: () => import('../views/Portfolio3View.vue')
     },
+    {
+      path: '/guide',
+      name: 'guide',
+      component: () => import('../views/guideView.vue')
+    },
   ]
 })
 

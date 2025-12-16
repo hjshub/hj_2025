@@ -1,9 +1,9 @@
 <template>
-    <Portfolio3 />
+    <Guide />
 </template>
 
 <script setup lang="ts">
-import Portfolio3 from '@/components/Portfolio3.vue'
+import Guide from '@/components/guide.vue'
 </script>
 
 <style scoped>

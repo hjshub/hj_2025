@@ -69,25 +69,27 @@ onMounted(() => {
   if (!layout) return;
 
   // iOS 내부 스크롤 컨테이너 bounce/벽돌 현상 우회
-  let startY = 0;
-  layout.addEventListener('touchstart', function(e) {
-    startY = e.touches[0].clientY;
-  });
+  // ***** overscroll-behavior-y: contain; 설정으로 스크립트 불필요 해짐 *****
 
-  layout.addEventListener('touchmove', function(e) {
-    const scrollTop = layout.scrollTop;
-    const scrollHeight = layout.scrollHeight;
-    const offsetHeight = layout.offsetHeight;
+  // let startY = 0;
+  // layout.addEventListener('touchstart', function(e) {
+  //   startY = e.touches[0].clientY;
+  // });
 
-    // 맨 위에서 아래로 당길 때
-    if (scrollTop === 0 && e.touches[0].clientY > startY) {
-      e.preventDefault();
-    }
-    // 맨 아래에서 위로 올릴 때
-    if (scrollTop + offsetHeight >= scrollHeight && e.touches[0].clientY < startY) {
-      e.preventDefault();
-    }
-  }, { passive: false });
+  // layout.addEventListener('touchmove', function(e) {
+  //   const scrollTop = layout.scrollTop;
+  //   const scrollHeight = layout.scrollHeight;
+  //   const offsetHeight = layout.offsetHeight;
+
+  //   // 맨 위에서 아래로 당길 때
+  //   if (scrollTop === 0 && e.touches[0].clientY > startY) {
+  //     e.preventDefault();
+  //   }
+  //   // 맨 아래에서 위로 올릴 때
+  //   if (scrollTop + offsetHeight >= scrollHeight && e.touches[0].clientY < startY) {
+  //     e.preventDefault();
+  //   }
+  // }, { passive: false });
 
   layout?.addEventListener('scroll', throttledScroll);
 })

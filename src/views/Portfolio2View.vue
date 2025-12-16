@@ -1,9 +1,9 @@
 <template>
-    <Test />
+    <Portfolio2 />
 </template>
 
 <script setup lang="ts">
-import Test from '@/components/Portfolio2.vue'
+import Portfolio2 from '@/components/Portfolio2.vue'
 </script>
 
 <style scoped>
