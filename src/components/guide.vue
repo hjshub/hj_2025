@@ -1,7 +1,11 @@
 <template>
-    <section class="p-0 bg-gray-100 scrollSection">
+    <section class="p-0 bg-purple-100 scrollSection">
     </section>
     <section class="p-0 bg-purple-200 scrollSection" data-allow-scroll="Y">
+    </section>
+    <section class="p-0 bg-purple-300 scrollSection" data-allow-scroll="Y">
+    </section>
+    <section class="p-0 bg-purple-400 scrollSection" data-allow-scroll="Y">
     </section>
     <section class="p-0 bg-purple-500 scrollSection" data-allow-scroll="Y">
     </section>
@@ -28,6 +32,8 @@ const throttle = (fn: () => void, delay: number) => {
 
 const prevDeltaY = ref(layout?.scrollTop);
 const isAnimation = ref(false);
+// let prevDirection = 0; // 이전 스크롤 방향 저장
+let isTouching = false;
 
 const preventScroll = (e: Event) => {
     e.preventDefault();
@@ -46,19 +52,26 @@ const setAnimation = () => {
 
     if(isAnimation.value) return;
 
+    // 방향이 바뀌었을 때만 계속 진행
+    // const directionChanged = (prevDirection > 0 && _detaY < 0) || (prevDirection < 0 && _detaY > 0);
+    // prevDirection = _detaY;
+    
+    // if(!directionChanged && Math.abs(_detaY) < 1) return; // 미미한 스크롤도 무시
+
     let hasAnimation = false;
     let scrollTarget = 0;
 
     scrollSection.forEach((el) => {
         if(el.dataset.allowScroll) {
             const rect = el.getBoundingClientRect();
-            
-            if(rect.top < window.innerHeight * 0.5 && rect.top > 0) {
+
+            if(_detaY > 0 && rect.top < window.innerHeight * 0.3 && rect.top > 0 ){
                 hasAnimation = true;
-                scrollTarget = _detaY < 0 
-                    ? (el.previousElementSibling as HTMLElement)?.offsetTop || 0
-                    : rect.top + layout.scrollTop;
-            } 
+                scrollTarget = rect.top + layout.scrollTop;
+            } else if(_detaY < 0 && rect.top < window.innerHeight && rect.top > window.innerHeight * 0.3) {
+                hasAnimation = true; 
+                scrollTarget = (el.previousElementSibling as HTMLElement)?.offsetTop || 0;
+            }
         }
     });
 
@@ -66,7 +79,6 @@ const setAnimation = () => {
     if(hasAnimation) {
         isAnimation.value = true;
         layout?.addEventListener('wheel', preventScroll, { passive: false });
-        layout?.addEventListener('touchmove', preventScroll, { passive: false });
 
         gsap.to(layout, {
             ease: 'power2.out', 
@@ -75,7 +87,6 @@ const setAnimation = () => {
             onComplete(){
                 isAnimation.value = false;
                 layout?.removeEventListener('wheel', preventScroll);
-                layout?.removeEventListener('touchmove', preventScroll);
             }
         });
     }
@@ -83,14 +94,32 @@ const setAnimation = () => {
 
 const throttledScroll = throttle(setAnimation, 100);
 
+const handleTouchStart = () => {
+    isTouching = true;
+}
+
+const handleTouchEnd = () => {
+    isTouching = false;
+    setAnimation();
+}
+
+const handleScroll = () => {
+    if(!isTouching) {
+        throttledScroll();
+    }
+}
+
 onMounted(() => {
-    layout?.addEventListener('scroll', throttledScroll);
+    layout?.addEventListener('scroll', handleScroll);
+    layout?.addEventListener('touchstart', handleTouchStart);
+    layout?.addEventListener('touchend', handleTouchEnd);
 })
 
 onUnmounted(() => {
-    layout?.removeEventListener('scroll', throttledScroll);
+    layout?.removeEventListener('scroll', handleScroll);
+    layout?.removeEventListener('touchstart', handleTouchStart);
+    layout?.removeEventListener('touchend', handleTouchEnd);
     layout?.removeEventListener('wheel', preventScroll);
-    layout?.removeEventListener('touchmove', preventScroll);
 })
 
 </script>
