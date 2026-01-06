@@ -1,0 +1,1 @@
+import{_ as s}from"./index-DZEemDc1.js";import{d as a,o as e,b as o,e as t,i,q as p}from"./vendor-CW77Xbfx.js";import"./gsap-3GKaO8XO.js";const m={class:"p-0"},r=a({__name:"Ui",setup:s=>(e((()=>{})),o((()=>{})),(s,a)=>(i(),t("section",m)))}),_=s(a({__name:"UiView",setup:s=>(s,a)=>(i(),p(r))}),[["__scopeId","data-v-a2b86f8f"]]);export{_ as default};

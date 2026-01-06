@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import Guide from '@/components/Guide.vue'
+import Guide from '@/components/Ui.vue'
 </script>
 
 <style scoped>

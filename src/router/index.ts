@@ -42,7 +42,12 @@ const router = createRouter({
     {
       path: '/guide',
       name: 'guide',
-      component: () => import('../views/guideView.vue')
+      component: () => import('../views/GuideView.vue')
+    },
+    {
+      path: '/uiLib',
+      name: 'ui_lib',
+      component: () => import('../views/UiView.vue')
     },
   ]
 })
