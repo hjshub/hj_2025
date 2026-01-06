@@ -88,7 +88,7 @@ export default defineConfig(({ command }) => ({
   },
   server: {
     port: 10107,
-    host: '192.168.1.86',
+    host: '10.0.1.57',
     // host: '0.0.0.0',
     open: false,
   }
