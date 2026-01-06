@@ -1,9 +1,9 @@
 <template>
-    <Guide />
+    <Ui />
 </template>
 
 <script setup lang="ts">
-import Guide from '@/components/Ui.vue'
+import Ui from '@/components/Ui.vue'
 </script>
 
 <style scoped>
