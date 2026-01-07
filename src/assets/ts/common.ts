@@ -1075,8 +1075,8 @@ const gb = new _gb();
 window.addEventListener('resize', () => {
   // DOMCache.clear(); // 캐시 초기화
   if (gb.CommonFunction().isMob()) {
-    ScrollTrigger.config({ ignoreMobileResize: true });
-    ScrollTrigger.normalizeScroll(true);
+    // ScrollTrigger.config({ ignoreMobileResize: true });
+    // ScrollTrigger.normalizeScroll(true);
   } else {
     gb.CommonFunction().scrollReset();
   }
