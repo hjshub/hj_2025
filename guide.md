@@ -202,3 +202,148 @@ watch(() => route.fullPath, (newPath) => {
 ### 구조분해 주의
 - 구조분해하면 반응성 잃음
 - `toRefs()`, `toRef()`로 변환 후 사용
+
+## 9. Slot - 컴포넌트 컨텐츠 삽입
+
+### 개념
+- 컴포넌트에 **"구멍"**을 뚫어서 외부에서 내용을 주입하는 방식
+- 레고 블록처럼 **틀(컴포넌트)**과 **내용(슬롯)**을 분리
+- 같은 구조, 다른 내용으로 재사용성 극대화
+
+### 기본 Slot
+
+```vue
+<!-- Button.vue (컴포넌트) -->
+<template>
+  <button class="btn">
+    <slot></slot>  <!-- 구멍 -->
+  </button>
+</template>
+
+<!-- 사용 -->
+<Button>클릭하세요</Button>
+<Button><strong>강조 버튼</strong></Button>
+<Button><img src="icon.svg" /> 아이콘 버튼</Button>
+```
+
+### Named Slot (이름 있는 슬롯)
+
+```vue
+<!-- Card.vue -->
+<template>
+  <div class="card">
+    <div class="header">
+      <slot name="header"></slot>
+    </div>
+    <div class="body">
+      <slot></slot>  <!-- 기본 슬롯 -->
+    </div>
+    <div class="footer">
+      <slot name="footer"></slot>
+    </div>
+  </div>
+</template>
+
+<!-- 사용 -->
+<Card>
+  <template #header>
+    <h3>카드 제목</h3>
+  </template>
+  
+  <p>카드 본문 내용입니다.</p>
+  
+  <template #footer>
+    <button>확인</button>
+  </template>
+</Card>
+```
+
+### Named Slot 문법
+
+| 문법 | 코드 | 설명 |
+|-----|------|------|
+| 정식 문법 | `<template v-slot:item1>내용</template>` | Vue 공식 문법 |
+| 축약 문법 | `<template #item1>내용</template>` | 더 많이 사용되는 축약형 |
+
+```vue
+<!-- 두 방식 모두 동일하게 동작 -->
+<Ui>
+  <!-- 정식 문법 -->
+  <template v-slot:item1>내용</template>
+  
+  <!-- 축약 문법 (권장) -->
+  <template #item2>내용</template>
+</Ui>
+```
+
+### Slot vs Props 비교
+
+| 방식 | 사용 | 장점 | 단점 |
+|-----|------|------|------|
+| **Props** | `:title="제목"` | 간단한 데이터 전달에 적합 | HTML 구조 전달 어려움 |
+| **Slot** | `<template #header>...</template>` | 복잡한 HTML/컴포넌트 전달 가능 | 코드량 증가 |
+
+### 실전 예시: 10개 리스트 UI
+
+```vue
+<!-- Ui.vue (컴포넌트) -->
+<template>
+  <section class="ui-list">
+    <ul>
+      <li v-for="n in 10" :key="n">
+        <em :data-number="n < 10 ? `0${n}` : n">
+          <slot :name="`item${n}`"></slot>
+        </em>
+      </li>
+    </ul>
+  </section>
+</template>
+
+<!-- 사용: 작업한 것만 슬롯 작성 -->
+<Ui>
+  <!-- 1번: 작업 안 함 (비워둠) -->
+  
+  <!-- 2번: 버튼 작업 -->
+  <template #item2>
+    <div class="button-work">
+      <button @click="handleClick">클릭</button>
+      <p>설명 텍스트</p>
+    </div>
+  </template>
+  
+  <!-- 3, 4번: 작업 안 함 -->
+  
+  <!-- 5번: 복잡한 레이아웃 -->
+  <template #item5>
+    <div class="complex-layout">
+      <img src="/image.jpg" alt="" />
+      <h3>제목</h3>
+      <ul>
+        <li>항목1</li>
+        <li>항목2</li>
+      </ul>
+      <button class="btn-primary">버튼</button>
+    </div>
+  </template>
+  
+  <!-- 6~10번: 작업 안 함 -->
+</Ui>
+```
+
+### Slot 장점
+
+| 장점 | 설명 |
+|-----|------|
+| 재사용성 | 같은 틀로 다양한 내용 표현 |
+| 유연성 | HTML, 컴포넌트, 이벤트 모두 전달 가능 |
+| 가독성 | 구조(컴포넌트)와 내용(슬롯) 분리 |
+| 관리 편의 | 작업한 것만 작성, 나머지는 자동으로 빈 칸 |
+
+### Slot 활용 시나리오
+
+| 시나리오 | 코드 패턴 |
+|---------|---------|
+| 버튼 컴포넌트 | `<Button><slot></slot></Button>` |
+| 모달/다이얼로그 | `<Modal><slot name="title" /><slot /></Modal>` |
+| 레이아웃 | `<Layout><slot name="header" /><slot /><slot name="footer" /></Layout>` |
+| 리스트 아이템 | `<UiList><slot name="item1" />...` |
