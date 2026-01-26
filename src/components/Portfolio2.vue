@@ -22,6 +22,7 @@ import CommonFunction from '../assets/ts/common'
 const common = CommonFunction()
 const rollingFanAnimation = common.rollingFanAnimation;
 const projects = ref<any[]>([])
+let cleanupAnimation: (() => void) | null = null;
 
 const axiosListUp = async () => {
   try {
@@ -40,9 +41,15 @@ onMounted(async () => {
     
         // DOM 업데이트 후 애니메이션 실행
         await nextTick();
-        rollingFanAnimation();
+        cleanupAnimation = rollingFanAnimation();
     } catch (error) {
         console.error('Failed to load projects:', error)
+    }
+})
+
+onUnmounted(() => {
+    if (cleanupAnimation) {
+        cleanupAnimation();  // RAF 정리
     }
 })
 

@@ -36,7 +36,7 @@ interface EventWithTarget extends Event {
 interface CommonFunctionReturn {
   init: () => void;
   isMob: () => boolean;
-  countYear: (date: string) => void;
+  countYear: (date: string, trg: string | HTMLElement, type?: string) => void;
   scrollReset: () => void;
   setGnb: () => void;
   scrollGage: () => number;
@@ -690,11 +690,11 @@ export default function CommonFunction(): CommonFunctionReturn {
     Performance.start('animate');
     const elements = document.querySelectorAll('.animate');
       elements.forEach((el, idx) => {
-         if (el.getBoundingClientRect().top < document.documentElement.clientHeight) {
+        if (el.getBoundingClientRect().top < document.documentElement.clientHeight) {
             el.classList.add('animation--start');
-          } else {
-            el.classList.remove('animation--start');
-          }
+        } else {
+          el.classList.remove('animation--start');
+        }
       });
 
     Performance.end('animate');
@@ -823,21 +823,114 @@ export default function CommonFunction(): CommonFunctionReturn {
       }, 2000);
     }
   };
-  const countYear = (date: string) => {
-    const countYear : Element | null = document.querySelector('.countY');
+  const countYear = (date: string, trg: string | HTMLElement, type: string = '') => {
+    let countYearEl : Element | null;
+    
+    // 문자열이면 클래스 선택자로 querySelector, HTMLElement면 그대로 사용
+    if (typeof trg === 'string') {
+      countYearEl = document.querySelector(`.${trg}`);
+    } else {
+      countYearEl = trg as Element;
+    }
+    
+    if (!countYearEl) return;
+    countYearEl!.textContent = '';
+
     const start : Date = new Date(date);
     const today : Date = new Date();
-    const def : number = today - start;
-    const year : number = Math.floor(def / (1000*60*60*24*365));
-    // const month : number = Math.floor((def % (1000*60*60*24*365)) / (1000*60*60*24*30));
-
-    for(let i = 0; i <= year; i++){
-      (function(n){
-        setTimeout(function(){
-          if(countYear) countYear.innerHTML = n.toFixed();
-        }, n*70);
-      })(i);
+    const def : number = today.getTime() - start.getTime();
+    const targetDays : number = Math.floor(def / (1000*60*60*24));
+    const targetYears : number = Math.floor(def / (1000*60*60*24*365));
+    const targetDate :number = type === 'year' ? targetYears : targetDays;
+    
+    let frame = 0;
+    const totalFrames = 200;
+    const targetStr = String(targetDate);
+    const digitCount = targetStr.length;
+    
+    // 각 자리수가 확정되는 시점 (뒤에서부터)
+    const lockTimings = Array.from({length: digitCount}, (_, i) => 
+      0.3 + (digitCount - 1 - i) * 0.2
+    );
+    
+    // em 요소들 생성
+    const digitElements: HTMLElement[] = [];
+    
+    for (let i = 0; i < digitCount; i++) {
+      const em = document.createElement('em');
+      em.style.display = 'inline-block';
+      em.style.transition = 'transform 0.3s ease-out';
+      em.textContent = '0';
+      countYearEl.appendChild(em);
+      digitElements.push(em);
     }
+    
+    const animate = () => {
+      frame++;
+      
+      const progress = frame / totalFrames;
+      
+      if (frame < totalFrames) {
+        for (let i = 0; i < digitCount; i++) {
+          const targetDigit = parseInt(targetStr[i]);
+          const lockPoint = lockTimings[i];
+          const em = digitElements[i];
+          const prevValue = em.textContent || '0';
+          let newValue: string;
+          
+          if (progress >= lockPoint) {
+            // 확정된 자리수 - 안정화
+            newValue = String(targetDigit);
+            
+            // 확정 시 transform 0, scale 1, opacity 1로 안정화
+            em.style.transform = 'translateY(0) scale(1)';
+            em.style.opacity = '1';
+            em.textContent = newValue;
+          } else {
+            // 아직 랜덤 중
+
+            // const localProgress = progress / lockPoint;
+            // if (localProgress > 0.8) {
+            //   // 거의 확정 - 목표값 근처에서만 흔들림
+            //   const nearRandom = Math.random() < 0.5 ? targetDigit : (targetDigit + (Math.random() < 0.5 ? -1 : 1) + 10) % 10;
+            //   newValue = String(nearRandom);
+            // } else {
+            //   // 완전 랜덤
+            //   newValue = String(Math.floor(Math.random() * 10)); 
+            // }
+
+            newValue = String(Math.floor(Math.random() * 10));
+            
+            // 값이 바뀔 때만 애니메이션
+            if (prevValue !== newValue) {
+              // 확정 전: 큰 폭으로 위아래 랜덤 이동
+              const randomY = (Math.random() - 0.5) * 20; // -10 ~ 10 사이 랜덤
+              
+              // 확정 전: opacity도 흔들림 (0.3 ~ 0.8)
+              const randomOpacity = 0.3 + Math.random() * 0.5;
+              
+              // 확정 전: scale도 튀는 느낌 (0.8 ~ 1.2)
+              const randomScale = 0.8 + Math.random() * 0.4;
+              
+              em.style.transform = `translateY(${randomY}px) scale(${randomScale})`;
+              em.style.opacity = String(randomOpacity);
+              em.textContent = newValue;
+            }
+          }
+        }
+        
+        requestAnimationFrame(animate);
+      } else { // 방어적 프로그래밍 - 실상 불필요코드
+        // 최종값 설정 - 모두 안정화
+        digitElements.forEach((em, i) => {
+          em.textContent = targetStr[i];
+          em.style.transform = 'translateY(0) scale(1)';
+          em.style.opacity = '1';
+        });
+      }
+    };
+    
+    requestAnimationFrame(animate);
   }
   const scrollAnimation = () => {
       const spanEl = document.querySelectorAll('.rollingFan2 span') as NodeListOf<HTMLElement>;
@@ -882,6 +975,7 @@ export default function CommonFunction(): CommonFunctionReturn {
       // console.log(ScrollTrigger.getAll().length);
       // ScrollTrigger.getAll().forEach(t => console.log(t.trigger, t.start, t.end));
   };
+
   // const rollingFanAnimation = () => {
   //   // const fan = gsap.utils.toArray('.rollingFan span');
   //   const fan = document.querySelectorAll('.rollingFan span');
@@ -957,6 +1051,7 @@ export default function CommonFunction(): CommonFunctionReturn {
     const angle = [-90, -60, -30, 0, 30, 60, 90];
     const rY = [50, 0, -50, -100, -50, 0, 50];
     const center = Math.floor(angle.length / 2);
+    let rafId: number | null = null; // ✅ RAF ID 저장
 
     const rolling = () => {
       let rollingFan = document.querySelector('.rollingFan') as HTMLElement | null;
@@ -991,13 +1086,13 @@ export default function CommonFunction(): CommonFunctionReturn {
           if (now - start >= delay) {
             callback();
           } else {
-            requestAnimationFrame(loop);
+            rafId = requestAnimationFrame(loop); // ✅ ID 저장, 매 프레임마다 새 ID로 덮어씀!
           }
         }
-        requestAnimationFrame(loop);
+        return requestAnimationFrame(loop); // ✅ 첫 ID 반환
       }
 
-      rafTimeout(() => {
+      rafId = rafTimeout(() => {
         document.querySelector('.rollingFan')?.append(fan[0]);
         fan[0].style.opacity = '0';
 
@@ -1006,6 +1101,13 @@ export default function CommonFunction(): CommonFunctionReturn {
     }  
     
     rolling();
+
+    // ✅ cleanup 함수
+    return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId); // ✅ RAF 취소
+      }
+    };
   };
   const init = () => {
     try {

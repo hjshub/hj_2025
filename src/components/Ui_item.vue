@@ -25,14 +25,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-    :global(#gnb .menu) {
-        @apply h-0;
-    }
-
-    :global(#gnb .menu ul) {
-        @apply sr-only;
-    }
-
     .ui-list {
         @apply pr-20 pl-20;
 

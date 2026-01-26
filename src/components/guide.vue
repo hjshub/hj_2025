@@ -1,20 +1,18 @@
 <template>
-    <section class="p-0 bg-purple-100 scrollSection">
-    </section>
-    <section class="p-0 bg-purple-200 scrollSection" data-allow-scroll="Y">
-    </section>
-    <section class="p-0 bg-purple-300 scrollSection" data-allow-scroll="Y">
-    </section>
-    <section class="p-0 bg-purple-400 scrollSection" data-allow-scroll="Y">
-    </section>
-    <section class="p-0 bg-purple-500 scrollSection" data-allow-scroll="Y">
-    </section>
+    <GuideList :sectionCount="5">
+        <template #section1></template>
+        <template #section2></template>
+        <template #section3></template>
+        <template #section4></template>
+        <template #section5></template>
+    </GuideList>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import CommonFunction from '../assets/ts/common'
+import GuideList from './Guide_list.vue'
 
 const common = CommonFunction();
 const layout = document.querySelector('#layout');

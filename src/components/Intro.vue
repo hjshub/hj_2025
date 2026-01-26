@@ -20,7 +20,7 @@
       </div>
       <div class="intro-box2">
         <div class="flex--wrap column intro-2">
-          <span><b class="countY">0</b>년 차</span>
+          <span><b class="countY"></b>년 차</span>
           <strong>웹 퍼블리셔</strong>
           <span>김효주 입니다.</span>
         </div>
@@ -165,7 +165,12 @@ const introMotion = () => {
   });
   const scene2 = gsap.timeline({ 
     paused: true,
-    onStart: () => { currentSceneIndex.value = 1; },
+    onStart: () => { 
+      currentSceneIndex.value = 1;
+      // gotoScene 재진입 시 이전 countYear의 em 태그들 제거
+      const countYearEl = document.querySelector('.countY') as HTMLElement;
+      countYearEl.textContent = '';
+    },
     onComplete: () => {
       if(autoPlay.value) scene3.play()
     } 
@@ -253,7 +258,7 @@ const introMotion = () => {
     backgroundPositionX:'100VW',
     duration:1.8,
     repeat:1,
-    yoyo:true
+    yoyo:true,
   },'+=1')
   
   scene2
@@ -261,11 +266,14 @@ const introMotion = () => {
     alpha: 0,
     duration: 1,
     scale: 0.5,
-  }, '+=2')
+  }, '+=1')
   .to('.intro-2', {
     alpha: 1,
     duration: 1,
     scale: 1,
+    onComplete(){
+      common.countYear('2015/10/26', 'countY', 'year');
+    }
   }, '<')
   .to('.intro-frame span:nth-of-type(4)', {
     duration: 1,
@@ -286,11 +294,6 @@ const introMotion = () => {
     duration: 1,
     xPercent: -100,
     stagger: 0.2,
-    onComplete(){
-      setTimeout(() => {
-        common.countYear('2015/10/26')
-      }, 500);
-    }
   }, '<')
   .to('.intro-2 > *', {
     alpha: 0,
