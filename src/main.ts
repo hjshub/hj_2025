@@ -6,13 +6,11 @@ import './assets/css/main.scss'
 
 // Font Awesome
 import '@fortawesome/fontawesome-free/css/all.css'
+import CommonFunction from './assets/ts/common'
 
-// 다크모드 설정
-if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  document.documentElement.classList.add('darkMode')
-} else {
-  document.documentElement.classList.remove('darkMode')
-}
+const common = CommonFunction();
+
+common.init()
 
 const app = createApp(App)
 

@@ -65,13 +65,12 @@ const throttledScroll = () => {
 
     scrollTimeout = null;
   }, props.isMob ? 100 : 16); // 모바일 : 100밀리세컨즈, 웹 : 16 - 약 60fps에 해당
-  console.log('throttledScroll executed');
+  // console.log('throttledScroll executed');
 };
 
 onMounted(() => {
-  common.init()
-  
   if (!layout) return;
+  common.headerMotion();
 
   // iOS 내부 스크롤 컨테이너 bounce/벽돌 현상 우회
   // ***** overscroll-behavior-y: contain; 설정으로 스크립트 불필요 해짐 *****

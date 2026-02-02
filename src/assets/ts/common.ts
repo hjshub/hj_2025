@@ -47,6 +47,7 @@ interface CommonFunctionReturn {
   toastPopup: (txt: string) => void;
   scrollAnimation: () => void;
   rollingFanAnimation: () => void;
+  headerMotion: () => void;
   // horizonScrollMotion : () => void;
   // countRating: () => void;
   getAnimationManager: () => typeof AnimationManager;
@@ -500,13 +501,18 @@ export default function CommonFunction(): CommonFunctionReturn {
     });
 
     Performance.start('header-animation');
+    
+    const r1 = document.querySelector('.r1') as HTMLElement;
+    const r2 = document.querySelector('.r2') as HTMLElement;
 
-    timeline.to('.r1', {
+    if (!r1 || !r2) return;
+
+    timeline.to(r1, {
       alpha: 0,
       duration: 0.4,
       delay: 0.5,
       x: '-100%',
-    }).to('.r2', {
+    }).to(r2, {  
       alpha: 1,
       delay:1,
       duration: 1,
@@ -641,7 +647,7 @@ export default function CommonFunction(): CommonFunctionReturn {
     const safeScrollTop = Math.min(gb.scrollTop, maxScrollTop);
     gb.scrollSize = Math.floor((safeScrollTop / maxScrollTop) * 100);
 
-    // 99% 이상이면 100%로 보정 (모바일 하단 주소창 등 이슈 대응)
+    // 95% 이상이면 100%로 보정 (모바일 하단 주소창 등 이슈 대응)
     if (gb.scrollSize >= 95) {
       gb.scrollSize = 100;
     }
@@ -743,7 +749,7 @@ export default function CommonFunction(): CommonFunctionReturn {
   };
   const toggleTheme = function () {
     ThemeSystem.toggle();
-    ThemeTransition.animate();
+    // ThemeTransition.animate();
   };
   const pointerMotion = () => {
     const motionContainer = document.getElementById('contents');
@@ -1139,6 +1145,7 @@ export default function CommonFunction(): CommonFunctionReturn {
     isMob,
     setGnb,
     countYear,
+    headerMotion,
     scrollReset,
     scrollGage,
     setViewportHeight,

@@ -1,43 +1,73 @@
 <template>
     <div>
-        <UiItem>
-            <template #item1>
-                <div class="content">
-                    <span></span>
-                    <a class="switch" @click.prevent="toggleTyping">switch</a>
-                </div>
-            </template>
-            <template #item2>
-                <div class="content-2">
-                    <span></span>
-                    <a class="switch" @click.prevent="toggleActive">switch</a>
-                    <!-- <a href="javascript:void(0);" onclick="this.previousElementSibling.classList.toggle('active');">switch</a> -->
-                    <!-- <a href="javascript:document.activeElement.previousElementSibling.classList.toggle('active')">switch</a> -->
-                </div>
-            </template>
-            <template #item3>
-                <div class="content-3">
-                    <span></span>
-                    <a class="switch" @click.prevent="common.countYear('2015/10/26', $event.currentTarget?.previousElementSibling);">switch</a>
-                </div>
-            </template>
-            <template #item4>
-                <div class="content-4">
-                    <ul>
-                        <li v-for="(item, index) in textArray" :key="index">
-                            <em>{{ index + 1 }}</em>
-                            <span><b>{{ item }}</b></span>
-                        </li>
-                    </ul>
-                    <!-- <a class="switch" @click.prevent="toggleTabAnimation">switch</a> -->
-                </div>
-            </template>
-            <template #item5>
-                <div class="content-5">
-                    <div class="parallax-slide">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide" v-for="(item, index) in textArray" :key="index">
-                                <div class="slide-bg" :style="`background-image: url('https://picsum.photos/800/400?random=${index}')`"><span>{{ item }}</span></div>
+        <UiItem :items="items">
+            <template v-slot="{ n }">
+                <h3 class="sr-only">{{ items[n - 1].title }}</h3>
+                <div :class="`item-container${n}`">
+                    <div v-if= "n === 1">
+                        <span></span>
+                        <button type="button" class="switch" @click.prevent="toggleTyping">toggle</button>
+                    </div>
+
+                    <div v-else-if= "n === 2">
+                        <span></span>
+                        <button type="button" class="switch" @click.prevent="toggleActive">toggle</button>
+                        <!-- <a href="javascript:void(0);" onclick="this.previousElementSibling.classList.toggle('active');">switch</a> -->
+                        <!-- <a href="javascript:document.activeElement.previousElementSibling.classList.toggle('active')">switch</a> -->
+                    </div>
+
+                    <div v-else-if= "n === 3">
+                        <span></span>
+                        <button type="button" class="switch" @click.prevent="common.countYear('2015/10/26', $event.currentTarget?.previousElementSibling);">toggle</button>
+                    </div>
+
+                    <div v-else-if= "n === 4">
+                        <ul>
+                            <li v-for="(item, index) in textArray" :key="index">
+                                <em>{{ index + 1 }}</em>
+                                <span><b>{{ item }}</b></span>
+                            </li>
+                        </ul>
+                        <button type="button" class="switch" @click.prevent="toggleTabAnimation">toggle</button>
+                    </div>
+
+                    <div v-else-if= "n === 5">
+                        <div class="random-box">
+                            <div class="box-item" v-for="(el, i) in boxItem" :key="i" >
+                                <span :style="{backgroundColor: el.leftItemBg}" :data-number="i < 4 ? i : i + 4"></span>
+                                <span :style="{backgroundColor: el.rightItemBg}" :data-number="i < 4 ? i + 4 : i + 8"></span>
+                            </div>
+                        </div>
+                        <button type="button" class="switch" @click.prevent="toggleRandomBoxAnimation">toggle</button>
+                    </div>
+
+                    <div v-else-if= "n === 6">
+                        <div class="rotation-box">
+                            <div class="box-item" v-for="i in boxItem.length" :key="i">
+                                <span class="left" :style="{backgroundColor: boxItem[i - 1].leftItemBg}"></span>
+                                <span class="right" :style="{backgroundColor: boxItem[i - 1].rightItemBg}"></span>
+                            </div>
+                        </div>
+                        <button type="button" class="switch" @click.prevent="togglaRotationBoxAnimation">toggle</button>
+                    </div>
+
+                    <div v-else-if= "n === 7" class="--wide">
+                        <div class="parallax-slide">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide" v-for="(item, index) in textArray" :key="index">
+                                    <div class="slide-bg" :style="`background-image: url('https://picsum.photos/800/400?random=${index}')`"><span>{{ item }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-else-if="n === 8" class="--wide --full">
+                        <div class="scroll-box">
+                            <div class="box-item" v-for="(el, i) in boxItem" :key="i" >
+                                <span :style="{backgroundColor: el.leftItemBg, transform: `translateX(${i*3}vw)`}"></span>
+                            </div>
+                            <div class="box-item" v-for="(el, i) in boxItem" :key="i" >
+                                <span :style="{backgroundColor: el.rightItemBg, transform: `translateX(${i*3}vw)`}"></span>
                             </div>
                         </div>
                     </div>
@@ -65,10 +95,24 @@
     import 'swiper/css';
     import 'swiper/css/navigation';
     import 'swiper/css/pagination';
+import { set } from '@vueuse/core'
 
     gsap.registerPlugin(ScrollTrigger);
 
     const common = CommonFunction();
+
+    let itemContainer: NodeListOf<Element> | null = null;
+
+    const items = [
+        {title: "Typing animation"},
+        {title: "Text round animation"},
+        {title: "Day count animation"},
+        {title: "Tab animation"},
+        {title: "random box rotate animation"},
+        {title: "box rotate animation"},
+        {title: "Parallax slide animation"},
+        {title: "scroll trigger"},
+    ]
 
     const textArray = [
         "This is typing text example.",
@@ -77,15 +121,12 @@
         "This is typing text example4.",
     ];
 
-    let currentIndex = 0;
-    const isRunning = ref(false);  // ref로 변경
-
-    // =========================  #item1 =========================
+    // =========================  # item-container1 =========================
     // ===== 1. 재귀 setTimeout 방식 (콜백 기반, async 없음) =====
     // 타이핑 효과 (앞에서 추가)
     // const typeText = (text: string): Promise<void> => {
     //     return new Promise((resolve) => {
-    //         const content = document.querySelector('.content');
+    //         const content = itemContainer![0].querySelector('div');
     //         const span = content?.querySelector('span');
 
     //         if (!span) {
@@ -113,7 +154,7 @@
     // 지우기 효과 (뒤에서 삭제)
     // const eraseText = (): Promise<void> => {
     //     return new Promise((resolve) => {
-    //         const content = document.querySelector('.content');
+    //         const content = itemContainer![0].querySelector('div');
     //         const span = content?.querySelector('span');
 
     //         if (!span) {
@@ -138,7 +179,7 @@
     // ===== 2. setInterval 방식 =====
     // const typeText = (text: string): Promise<void> => {
     //     return new Promise((resolve) => {
-    //         const content = document.querySelector('.content');
+    //         const content = itemContainer![0].querySelector('div');
     //         const span = content?.querySelector('span');
 
     //         if (span) {
@@ -162,7 +203,7 @@
 
     // const eraseText = (): Promise<void> => {
     //     return new Promise((resolve) => {
-    //         const content = document.querySelector('.content');
+    //         const content = itemContainer![0].querySelector('div');
     //         const span = content?.querySelector('span');
 
     //         if (span) {
@@ -183,6 +224,9 @@
 
     // ===== 3. for...of + async/await =====
 
+    let currentIndex = 0;
+    const isRunning = ref(false);  // ref로 변경
+
     const delay = (ms: number): Promise<void> => {
         return new Promise(resolve => {
             if(!isRunning.value) {  // .value 추가
@@ -194,7 +238,7 @@
     };
     
     const typeText = async (text: string): Promise<void> => {
-        const content = document.querySelector('.content');
+        const content = itemContainer![0].querySelector('div');
         const span = content?.querySelector('span');
 
         if (span) {
@@ -208,7 +252,7 @@
     };
 
     const eraseText = async (): Promise<void> => {
-        const content = document.querySelector('.content');
+        const content = itemContainer![0].querySelector('div');
         const span = content?.querySelector('span');
 
         if (span) {
@@ -263,7 +307,7 @@
 
         // 재시작할 때는 runAnimation 다시 실행
         if (isRunning.value) {
-            const content = document.querySelector('.content');
+            const content = itemContainer![0].querySelector('div');
             const span = content?.querySelector('span') as HTMLElement;
 
             span.textContent = ''; // 초기화
@@ -282,10 +326,33 @@
         }
     };
 
-    // =========================  #item2 =========================
+    const togglaRotationBoxAnimation = () => {
+        // rotation box 애니메이션 토글
+        if (rotationBoxSetTimeoutId !== null) {
+            clearTimeout(rotationBoxSetTimeoutId);
+            rotationBoxSetTimeoutId = null;
+            console.log('clear rotation box animation');
+        } else {
+            rotationBoxAnimation().loop();
+        }
+    };
+
+    const toggleRandomBoxAnimation = () => {
+        // random box 애니메이션 토글
+        if (randomBoxIntervalId !== null) {
+            clearInterval(randomBoxIntervalId);
+            randomBoxIntervalId = null;
+            console.log('clear random box animation');
+        } else {
+            randomBoxIntervalId = window.setInterval(randomBoxAnimation, 3000);
+        }
+    };
+
+    // =========================  # item-container2 =========================
     // rounded text 애니메이션
     const roundedTextAnimation = () => {
-        const roundedSpan = document.querySelector('.content-2 span');
+        const content = itemContainer![1].querySelector('div');
+        const roundedSpan = content?.querySelector('span');
         const _t = textArray[0].split('');
         
         _t.forEach((el, idx) => {
@@ -296,13 +363,14 @@
         });
     };
 
-    // =========================  #item4 =========================
+    // =========================  # item-container4 =========================
     // vertical tab 애니메이션
     let setTimeoutId: number | null = null;
 
     // ===== 기존 코드 (주석 처리) =====
     // const verticalTabAnimation = () => {
-    //     const listItems = document.querySelectorAll('.content-4 ul li') as NodeListOf<Element>;
+    //     const content = itemContainer![3].querySelector('div');
+    //     const listItems = content?.querySelectorAll('ul li') as NodeListOf<Element>;
     //     let idx = 0;
 
     //     const toggleForward = () => {
@@ -371,7 +439,8 @@
 
     // ===== 개선된 코드 =====
     const verticalTabAnimation = () => {
-        const listItems = document.querySelectorAll('.content-4 ul li') as NodeListOf<Element>;
+        const content = itemContainer![3].querySelector('div');
+        const listItems = content?.querySelectorAll('ul li') as NodeListOf<Element>;
         
         if (listItems.length === 0) return;
 
@@ -454,7 +523,7 @@
         };
 
         // 초기 탭 열기 (미리 측정된 높이 사용)
-        const firstSpan = listItems[0]?.querySelector('span') as HTMLElement;
+        const firstSpan = listItems![0].querySelector('span') as HTMLElement;
         if (firstSpan) {
             gsap.set(firstSpan, { height: measuredHeights[0] || 0 });
         }
@@ -473,7 +542,267 @@
         }, DELAY_BETWEEN_TABS);
     };
 
-    // =========================  #item5 =========================
+    // =========================  # item-container5 =========================
+    let randomBoxIntervalId: number | null = null;
+
+    const randomBoxAnimation = async() => {
+        console.log('start random box animation');
+        const boxItems = document.querySelectorAll('.random-box span') as NodeListOf<HTMLElement>;
+        let coupleIndexs: number[] = Array.from({ length: 2}, () => 0);
+
+        const createRandomIndex = () => { // boxItems.length 기반으로 0 ~ (length-1) 범위의 랜덤 인덱스 생성
+            const randomIndex = boxItems.length > 0 ? Math.floor(Math.random() * boxItems.length) : -1;
+            if (randomIndex === -1) return; // 요소가 없으면 종료
+
+            return randomIndex;
+        }
+
+        coupleIndexs = [createRandomIndex()!, createRandomIndex()!];
+        let [left, right] = coupleIndexs;
+
+        if(left === right) { // 중복 방지
+            // console.log('중복발생', left, right);
+            right = (right + 1) % boxItems.length;
+        }
+        // console.log('선택된 인덱스', left, right);
+
+        boxItems.forEach((el) => {
+            el.classList.remove('rotate');
+        });
+
+        await wait(100); // 클래스 제거 후 잠깐 대기
+
+        const leftEl = boxItems[left];
+        const rightEl = boxItems[right];
+
+        leftEl.classList.add('rotate');
+        rightEl.classList.add('rotate');
+
+        await wait(1000); // 클래스 추가 후 잠깐 대기
+
+        leftEl.classList.remove('rotate');
+        rightEl.classList.remove('rotate');
+
+        boxItems[left].replaceWith(rightEl.cloneNode(true));
+        boxItems[right].replaceWith(leftEl.cloneNode(true));
+    };
+
+    // =========================  # item-container6 =========================
+    
+    const boxItem: {leftItemBg: string, rightItemBg: string}[] = [
+        {leftItemBg:'#f87171', rightItemBg:'#f97316'},
+        {leftItemBg:'#34d399', rightItemBg:'#38bdf8'},
+        {leftItemBg:'#60a5fa', rightItemBg:'#f472b6'},
+        {leftItemBg:'#fbbf24', rightItemBg:'#a78bfa'},
+        {leftItemBg:'#a78bfa', rightItemBg:'#fbbf24'},
+        {leftItemBg:'#f472b6', rightItemBg:'#60a5fa'},
+        {leftItemBg:'#38bdf8', rightItemBg:'#34d399'},
+        {leftItemBg:'#f97316', rightItemBg:'#f87171'},
+    ]
+    let rotationBoxSetTimeoutId: number | null = null;
+    let rotationTimeline: gsap.core.Timeline | null = null;
+    const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    
+    const rotationBoxAnimation = () => {
+        const boxItems = document.querySelectorAll('.rotation-box .box-item') as NodeListOf<HTMLElement>;
+        const totalDuration = (0.4 + 0.4 + 0.3 + 3) * 1000; // ms 단위
+
+        let index = 0;
+
+        const loop = () => {
+            // const idx = (index + boxItems.length) % boxItems.length;
+            const left = boxItems[index].querySelector('.left') as HTMLElement;
+            const right = boxItems[index].querySelector('.right') as HTMLElement;
+
+            const timeLine = gsap.timeline({
+                defaults: { ease: 'linear' },
+            });
+
+            timeLine
+            .fromTo(left, {
+                xPercent: 20,
+                alpha: 0,
+            },{
+                xPercent: 0,
+                duration: 0.4,
+                alpha: 1, 
+            }).fromTo(right, {
+                xPercent: -20,
+                alpha: 0,
+            },{
+                xPercent: 0,
+                duration: 0.4,
+                alpha: 1, 
+            },'<')
+            .to(left, {
+                xPercent: -200,
+                alpha: 0,
+                duration: 0.3,
+            },'+=3')
+            .to(right, {
+                xPercent: 200,
+                alpha: 0,
+                duration: 0.3,
+            },'<');
+            
+
+            rotationBoxSetTimeoutId = window.setTimeout(() => {
+                index = (index + 1) % boxItems.length;
+                loop();
+            }, totalDuration);
+        }
+
+        const loop2 = async () => {
+            while (true) {
+                const left = boxItems[index].querySelector('.left') as HTMLElement;
+                const right = boxItems[index].querySelector('.right') as HTMLElement;
+
+                const timeLine = gsap.timeline({
+                    defaults: { ease: 'linear' },
+                });
+
+                timeLine
+                .fromTo(left, {
+                    xPercent: 20,
+                    alpha: 0,
+                },{
+                    xPercent: 0,
+                    duration: 0.4,
+                    alpha: 1, 
+                }).fromTo(right, {
+                    xPercent: -20,
+                    alpha: 0,
+                },{
+                    xPercent: 0,
+                    duration: 0.4,
+                    alpha: 1, 
+                },'<')
+                .to(left, {
+                    xPercent: -200,
+                    alpha: 0,
+                    duration: 0.3,
+                },'+=3')
+                .to(right, {
+                    xPercent: 200,
+                    alpha: 0,
+                    duration: 0.3,
+                },'<');
+
+                await wait(totalDuration);
+                index = (index + 1) % boxItems.length;
+            }
+        }
+
+        const loop3 = async () => {
+            for (const box of boxItems) {
+                const left = box.querySelector('.left') as HTMLElement;
+                const right = box.querySelector('.right') as HTMLElement;
+
+                const timeLine = gsap.timeline({
+                    defaults: { ease: 'linear' },
+                });
+
+                timeLine
+                .fromTo(left, {
+                    xPercent: 20,
+                    alpha: 0,
+                },{
+                    xPercent: 0,
+                    duration: 0.4,
+                    alpha: 1, 
+                }).fromTo(right, {
+                    xPercent: -20,
+                    alpha: 0,
+                },{
+                    xPercent: 0,
+                    duration: 0.4,
+                    alpha: 1, 
+                },'<')
+                .to(left, {
+                    xPercent: -200,
+                    alpha: 0,
+                    duration: 0.3,
+                },'+=3')
+                .to(right, {
+                    xPercent: 200,
+                    alpha: 0,
+                    duration: 0.3,
+                },'<');
+
+                // 각 박스 애니메이션이 끝날 때까지 대기
+                await wait(totalDuration);
+                console.log('Box animation completed');
+            }
+
+            // 모든 박스가 끝나면 다시 시작
+            loop3();
+        }
+
+        const loop4 = () => {
+            if (boxItems.length === 0) return;
+
+            // 기존 타임라인이 있으면 정리
+            if (rotationTimeline) {
+                rotationTimeline.kill();
+                rotationTimeline = null;
+            }
+
+            // 마스터 타임라인: 모든 박스의 서브 타임라인을 오프셋하여 추가하고 전체를 무한 반복
+            const master = gsap.timeline({ repeat: -1, defaults: { ease: 'linear' } });
+
+            boxItems.forEach((box, idx) => {
+                const left = box.querySelector('.left') as HTMLElement;
+                const right = box.querySelector('.right') as HTMLElement;
+
+                // 각 박스의 오프셋(초 단위)
+                const stepDuration = 0.4 + 0.4 + 0.3 + 3; // seconds
+
+                const timeLine = gsap.timeline({
+                    defaults: { ease: 'linear'},
+                });
+
+                timeLine
+                .fromTo(left, {
+                    xPercent: -20,
+                    alpha: 0,
+                },{
+                    xPercent: 0,
+                    duration: 0.4,
+                    alpha: 1, 
+                }).fromTo(right, {
+                    xPercent: 20,
+                    alpha: 0,
+                },{
+                    xPercent: 0,
+                    duration: 0.4,
+                    alpha: 1, 
+                },'<')
+                .to(left, {
+                    xPercent: 100,
+                    alpha: 0,
+                    duration: 0.3,
+                },'+=3')
+                .to(right, {
+                    xPercent: -100,
+                    alpha: 0,
+                    duration: 0.3,
+                },'<');
+
+                master.add(timeLine, idx * stepDuration);
+            });
+
+            rotationTimeline = master;
+        }
+
+        return {
+            loop,
+            loop2,
+            loop3,
+            loop4
+        }
+    };
+
+    // =========================  # item-container7 =========================
     let swiperInstance: Swiper | null = null;
 
     const parallaxSlide = ():void => {
@@ -515,7 +844,68 @@
         });
     }
 
+    // =========================  # item-container8 =========================
+    const scrollBoxAnimation = () => {
+        const boxItems = gsap.utils.toArray('.scroll-box .box-item span') as HTMLElement[];
+
+        boxItems.forEach((el, idx) => {
+            const originX = el.style.transform.replace('translateX(', '').replace('vw)', '') as unknown as number;
+            // console.log(originX);
+            el.style.transform = 'translateX(0)';
+            // el.style.opacity = '0';
+
+            gsap.to(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 80%',
+                    end: 'bottom 70%',
+                    scrub: 0.5,
+                    // markers: {
+                    //     startColor: 'red',
+                    //     endColor: 'blue',
+                    //     fontSize: '16px',
+                    //     indent: 1 + idx * 10   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+                    // },
+                    onUpdate(self){
+                        el.style.opacity = String(self.progress);
+                        el.style.transition = 'transform 1s';
+                        el.style.transform = `translateX(${(self.progress) * originX}vw) rotateX(${self.progress * 360}deg)`;
+                    },
+                },
+                duration: 0.5,
+                ease: 'power1.out',
+            });
+
+            // gsap.fromTo(el,{
+            //     opacity:0,
+            //     x:0,
+            // },
+            // {
+            //     opacity:1,
+            //     duration: 0.5,
+            //     ease: 'power1.out',
+            //     x: `${originX}vw`,
+            //     scrollTrigger: {
+            //         trigger: el,
+            //         start: 'top 80%',
+            //         end: 'bottom 70%',
+            //         toggleActions: 'play none none reverse',
+            //         scrub: false,
+            //         // markers: {
+            //         //     startColor: 'red',
+            //         //     endColor: 'blue',
+            //         //     fontSize: '16px',
+            //         //     indent: 1 + idx * 10   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+            //         // },
+            //     },
+            // });
+        });
+
+    }
+
+
     // =========================  최하단 scrollTrigger pin 가로스크롤 (layout scroll event remove (header.vue), overflow unset & window scroll 사용) =========================
+    
     const x_scrollAnimation = () => {
         const wrapper = document.querySelector('.x-scrollWrapper') as HTMLElement;
         const _span = gsap.utils.toArray('.x-scrollWrapper span') as HTMLElement[];
@@ -593,8 +983,10 @@
             layout.style.overflow = 'unset';
         }
 
+        itemContainer = document.querySelectorAll('[class^="item-container"]') as NodeListOf<Element>;
+        
         roundedTextAnimation();
-        // verticalTabAnimation();
+        scrollBoxAnimation();
         x_scrollAnimation();
         parallaxSlide();
     })
@@ -606,6 +998,18 @@
         if (swiperInstance) {
             swiperInstance.destroy();
             swiperInstance = null;
+        }
+        
+        // rotation timeline cleanup
+        if (rotationTimeline) {
+            rotationTimeline.kill();
+            rotationTimeline = null;
+        }
+
+        // random box animation cleanup
+        if (randomBoxIntervalId) {
+            clearInterval(randomBoxIntervalId);
+            randomBoxIntervalId = null;
         }
         
         // layout overflow 원복
@@ -625,100 +1029,217 @@
         @apply sr-only;
     }
 
-    .content {
-        @apply flex w-full justify-center;
-
-        span {
-            @apply inline-block border-[1px] border-gray-300 border-solid w-[90%] h-[6rem] pl-3 pr-3 text-blue-300 text-[1.5rem] whitespace-pre-wrap;
-            line-height: 6rem;
-            
-            &:after {
-                @apply w-[1px] h-[2rem] bg-blue-500 ml-2 mr-2 opacity-0;
-                animation-name: blings;
-                animation-duration: 1.2s;
-                animation-iteration-count: infinite;
-
-                content:'';
-            }
-        }
-        @keyframes blings {
-            from {
-                opacity:0;
-            }to {
-                opacity:1;
-            }
-        }
+    :global(.ui-list ul li:has(.--wide)) {
+        @apply w-full;
     }
 
-    .content-2 {
-        @apply flex w-full justify-center;
-
-        span {
-            @apply flex w-[20rem] h-[20rem] text-blue-300 text-[1.5rem] rounded-[50%] relative;
-            animation: rotateAni 16s infinite linear paused;
-            
-            &.active {
-                animation-play-state: running;    
-            }
-
-            :deep(em) {
-                @apply absolute left-[50%] top-[50%] origin-[50%_50%];
-            }
-        }
-
-        @keyframes rotateAni {
-            from {
-                transform: rotate(0deg);
-            } to {
-                transform: rotate(360deg);
-            }
-        }
+    :global(.ui-list ul li:has(.--full)) {
+        @apply h-[calc(var(--vh,1px)*100)];
     }
 
-    .content-3 {
-        @apply text-blue-300 text-[3rem] flex w-full items-center justify-center;
+    [class^=item-container] {
+        @apply w-full h-full flex items-center justify-center;
     }
 
-    .content-4 {
-        @apply flex w-full items-center justify-center;
-
-        ul {
-            @apply flex w-[80%] flex-col items-center justify-center gap-5;
-
-            li {
-                @apply flex w-full flex-col rounded-[1rem] border-[1px] border-blue-300 border-solid overflow-hidden;
-                box-shadow:1px 1px 7px 3px rgba(147, 197, 253, 0.3);
-
-                em {
-                    @apply p-2 text-blue-300;
-                }
+    .item-container {
+        &1 {
+            > div {
+                @apply flex w-full justify-center;
 
                 span {
-                    @apply flex h-0;
+                    @apply inline-block border-[1px] border-gray-300 border-solid w-[90%] h-[6rem] pl-3 pr-3 text-blue-300 text-[1.5rem] whitespace-pre-wrap;
+                    line-height: 6rem;
+                    
+                    &:after {
+                        @apply w-[1px] h-[2rem] bg-blue-500 ml-2 mr-2 opacity-0;
+                        animation-name: blings;
+                        animation-duration: 1.2s;
+                        animation-iteration-count: infinite;
 
-                    b {
-                        @apply bg-blue-300 text-white p-2 pt-4 pb-4 w-full; 
+                        content:'';
+                    }
+                }
+                @keyframes blings {
+                    from {
+                        opacity:0;
+                    }to {
+                        opacity:1;
                     }
                 }
             }
         }
-    }
 
-    .content-5 {
-        @apply flex w-full h-[80%] items-center justify-center;
-        min-width:calc(100% + 5rem);
+        &2 {
+            > div {
+                @apply flex w-full justify-center;
 
-        .parallax-slide {
-            @apply w-full h-full relative overflow-hidden;
-
-            .swiper-slide {
-                @apply w-full h-full relative flex items-center justify-center overflow-hidden;
-                
-                .slide-bg {
-                    @apply absolute top-0 left-0 w-full h-full bg-center bg-cover flex items-center justify-center text-white text-[2.2rem];
+                span {
+                    @apply flex w-[20rem] h-[20rem] text-blue-300 text-[1.5rem] rounded-[50%] relative;
+                    animation: rotateAni 16s infinite linear paused;
                     
+                    &.active {
+                        animation-play-state: running;    
+                    }
+
+                    :deep(em) {
+                        @apply absolute left-[50%] top-[50%] origin-[50%_50%];
+                    }
+                }
+
+                @keyframes rotateAni {
+                    from {
+                        transform: rotate(0deg);
+                    } to {
+                        transform: rotate(360deg);
+                    }
+                }
+            }
+        }           
+
+        &3 {
+            > div {
+                @apply text-blue-300 text-[3rem] flex w-full items-center justify-center;
+            }
+        }
+
+        &4 {
+            > div {
+                @apply flex w-full items-center justify-center;
+
+                ul {
+                    @apply flex w-[80%] flex-col items-center justify-center gap-5;
+
+                    li {
+                        @apply flex w-full flex-col rounded-[1rem] border-[1px] border-blue-300 border-solid overflow-hidden;
+                        box-shadow:1px 1px 7px 3px rgba(147, 197, 253, 0.3);
+
+                        em {
+                            @apply p-2 text-blue-300;
+                        }
+
+                        span {
+                            @apply flex h-0;
+
+                            b {
+                                @apply bg-blue-300 text-white p-2 pt-4 pb-4 w-full; 
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &5 {
+            > div {
+                @apply flex w-full h-full items-center justify-center;
+
+                .random-box {
+                    @apply flex w-full h-auto items-center flex-wrap;
+                    counter-reset: counter-box;
+
+                    .box-item {
+                        @apply w-[25%] h-full;
+                    }
+
                     span {
-                        @apply text-center;
+                        @apply relative flex w-full h-24;
+                        counter-increment: counter-box;
+                        
+
+                        &:before {
+                            @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-[1.6rem];
+                            // content:counter(counter-box, decimal-leading-zero);
+                            content:attr(data-number);
+                        }
+
+                        &.rotate {
+                            animation: boxRotateAni 1s forwards;
+                        }
+                    }
+                    @keyframes boxRotateAni {
+                        from {
+                            transform: rotateY(0deg);
+                        } to {
+                            transform: rotateY(360deg);
+                        }
+                    }
+                }
+            }
+        }
+
+        &6 {
+            > div {
+                @apply flex w-full h-full items-center justify-center;
+
+                .rotation-box {
+                    @apply relative;
+
+                    .box-item {
+                        @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-[3rem];
+                    }
+
+                    span {
+                        @apply inline-flex border-none opacity-0;
+
+                        &.left {
+                            @apply w-80 h-80;
+                            transform:translateX(-10rem);
+                        }
+
+                        &.right {
+                            @apply w-56 h-56;
+                            transform:translateX(12rem);
+                        }
+                    }
+                }
+            }
+        }
+
+        &7 {
+            > div {
+                @apply flex w-full h-[80%] items-center justify-center;
+                min-width:calc(100% + 5rem);
+
+                .parallax-slide {
+                    @apply w-full h-full relative overflow-hidden;
+
+                    .swiper-slide {
+                        @apply w-full h-full relative flex items-center justify-center overflow-hidden;
+                        
+                        .slide-bg {
+                            @apply absolute top-0 left-0 w-full h-full bg-center bg-cover flex items-center justify-center text-white text-[2.2rem];
+                            
+                            span {
+                                @apply text-center;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &8 {
+            > div {
+                @apply flex w-full h-full items-center justify-center;
+
+                .scroll-box {
+                    @apply flex w-full h-auto items-center flex-wrap;
+                    counter-reset: counter-box;
+
+                    .box-item {
+                        perspective: 400px;
+                        @apply flex w-[50%] h-full justify-start;
+                    }
+
+                    span {
+                        @apply relative flex w-48 h-48;
+                        counter-increment: counter-box;
+                        
+
+                        &:before {
+                            @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-[1.6rem];
+                            content:counter(counter-box, decimal-leading-zero);
+                        }
                     }
                 }
             }
@@ -766,5 +1287,8 @@
 
     .switch {
         @apply inline-flex text-white text-[1.4rem] bg-black rounded-[1rem] px-4 h-16 items-center absolute bottom-10 right-0;
+        &:enactive {
+            @apply scale-95;
+        }
     }
 </style>
