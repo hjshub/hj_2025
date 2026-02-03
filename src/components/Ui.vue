@@ -852,9 +852,9 @@ import { set } from '@vueuse/core'
 
         boxItems.forEach((el, idx) => {
             const posX = [-40,40];
-            const posY = [20];
+            const posY = [0];
 
-            el.style.transform = `translate(${posX[idx % 2]}vw, ${posY[0]}vw)`;
+            el.style.transform = `translate(${posX[idx % 2]}vw, ${posY[0]}vw) rotateX(0)`;
             el.style.opacity = '0';
 
             gsap.to(el, {
@@ -863,24 +863,26 @@ import { set } from '@vueuse/core'
                     start: 'top 80%',
                     end: '30% 70%',
                     scrub: 1,
-                    markers: {
-                        startColor: 'red',
-                        endColor: 'blue',
-                        fontSize: '16px',
-                        indent: 1 + idx * 10   // i 에 따라 점차 우측으로 밀어서 겹침 방지
-                    },
+                    // markers: {
+                    //     startColor: 'red',
+                    //     endColor: 'blue',
+                    //     fontSize: '16px',
+                    //     indent: 1 + idx * 10   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+                    // },
                     onUpdate(self){
                         const p = self.progress;
                         el.style.transition = 'transform 0.6s';
                         el.style.opacity = String(p);
+                        el.style.transform = `translate(${posX[idx % 2] * (1 - p)}vw, ${posY[0]}vw) rotateX(${180 * p}deg)`;
                         
-                        if(self.progress < 0.5) {
-                            const intermediateX = posX[idx % 2] * (1 - (p * 2)); // 0.5까지는 posX ~ 0 사이
-                            el.style.transform = `translate(${intermediateX}vw, ${posY[0]}vw)`;
-                        } else {
-                            const intermediateY = posY[0] * ((1 - p) * 2); // 0.5 이후는 posY ~ 0 사이
-                            el.style.transform = `translate(0vw, ${intermediateY}vw)`;
-                        }
+                        // if(self.progress < 0.5) {
+                        //     const intermediateX = posX[idx % 2] * (1 - (p * 2)); // 0.5까지는 posX ~ 0 사이
+                        //     el.style.transform = `translate(${intermediateX}vw, ${posY[0]}vw)`;
+                        // } 
+                        // else {
+                        //     const intermediateY = posY[0] * ((1 - p) * 2); // 0.5 이후는 posY ~ 0 사이
+                        //     el.style.transform = `translate(0vw, ${intermediateY}vw)`;
+                        // }
                     },
                 },
                 duration: 0.5,
@@ -1072,7 +1074,7 @@ import { set } from '@vueuse/core'
 
 <style scoped lang="scss">
     :global(#gnb .menu) {
-        @apply h-0 overflow-hidden;;
+        @apply h-0 overflow-hidden;
     }
 
     :global(#gnb .menu ul) {
@@ -1084,7 +1086,7 @@ import { set } from '@vueuse/core'
     }
 
     :global(.ui-list ul li:has(.--full)) {
-        @apply min-h-[150vh];
+        @apply min-h-[200vh];
     }
 
     [class^=item-container] {
@@ -1286,8 +1288,12 @@ import { set } from '@vueuse/core'
                     }
 
                     span {
-                        @apply relative flex w-48 h-48;
+                        @apply relative flex w-36 h-36;
                         counter-increment: counter-box;
+
+                        @media screen and (min-width: 561px) {
+                            @apply w-48 h-48;
+                        }
                         
 
                         &:before {

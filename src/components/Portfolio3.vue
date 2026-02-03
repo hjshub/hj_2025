@@ -27,13 +27,13 @@ const scrollAnimation = common.scrollAnimation;
 const projects = ref<any[]>([])
 
 const axiosListUp = async () => {
-  try {
-    const response = await axios.get(`${import.meta.env.BASE_URL}data/list.json`);
-    return response.data;
-  } catch (error) {
-    common.getErrorHandler().catch(error instanceof Error ? error : new Error(String(error)));
-    return [];` `
-  }
+    try {
+        const response = await axios.get(`${import.meta.env.BASE_URL}data/list.json`);
+        return response.data;
+    } catch (error) {
+        common.getErrorHandler().catch(error instanceof Error ? error : new Error(String(error)));
+        return [];
+    }
 };
 
 onMounted(async () => {
@@ -58,7 +58,7 @@ onMounted(async () => {
         span {
             width:100vw;
             height:calc(var(--vh, 1vh) * 80);
-            @apply relative flex items-center justify-center text-[5rem] text-white;
+            @apply relative flex items-center justify-center text-white;
 
             &:before {
                 content: '';
