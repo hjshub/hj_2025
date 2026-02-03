@@ -702,9 +702,8 @@ textarea {
   }
 }
 #layout {
-  @apply relative overflow-hidden;
+  @apply relative overflow-x-hidden overflow-y-auto;
   height:calc(var(--vh, 1vh)*100);
-  overflow-y:auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: none; /* 또는 'contain' */
   overscroll-behavior-y: contain;

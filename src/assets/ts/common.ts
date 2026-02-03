@@ -508,12 +508,12 @@ export default function CommonFunction(): CommonFunctionReturn {
     if (!r1 || !r2) return;
 
     timeline.to(r1, {
-      alpha: 0,
+      autoAlpha: 0,
       duration: 0.4,
       delay: 0.5,
       x: '-100%',
     }).to(r2, {  
-      alpha: 1,
+      autoAlpha: 1,
       delay:1,
       duration: 1,
       x: '0',
@@ -526,12 +526,12 @@ export default function CommonFunction(): CommonFunctionReturn {
       for (let i in title_) {
         gsap.fromTo(title_[i],{
           //x: 600,
-          alpha: 0,
+              autoAlpha: 0,
           //rotation: '-540',
           y:'-50%',
         }, {
           //x: 0,
-          alpha: 1,
+              autoAlpha: 1,
           //rotation: '720',
           y:0,
           duration: 0.2,

@@ -64,10 +64,10 @@
                     <div v-else-if="n === 8" class="--wide --full">
                         <div class="scroll-box">
                             <div class="box-item" v-for="(el, i) in boxItem" :key="i" >
-                                <span :style="{backgroundColor: el.leftItemBg, transform: `translateX(${i*3}vw)`}"></span>
+                                <span :style="{backgroundColor: el.leftItemBg}"></span>
                             </div>
                             <div class="box-item" v-for="(el, i) in boxItem" :key="i" >
-                                <span :style="{backgroundColor: el.rightItemBg, transform: `translateX(${i*3}vw)`}"></span>
+                                <span :style="{backgroundColor: el.rightItemBg}"></span>
                             </div>
                         </div>
                     </div>
@@ -102,6 +102,8 @@ import { set } from '@vueuse/core'
     const common = CommonFunction();
 
     let itemContainer: NodeListOf<Element> | null = null;
+    let _prevOverflows: Array<{el: HTMLElement, overflowX: string}> | null = null;
+    let _prevLayoutOverflow: string | null = null;
 
     const items = [
         {title: "Typing animation"},
@@ -621,27 +623,27 @@ import { set } from '@vueuse/core'
             timeLine
             .fromTo(left, {
                 xPercent: 20,
-                alpha: 0,
+                autoAlpha: 0,
             },{
                 xPercent: 0,
                 duration: 0.4,
-                alpha: 1, 
+                autoAlpha: 1, 
             }).fromTo(right, {
                 xPercent: -20,
-                alpha: 0,
+                autoAlpha: 0,
             },{
                 xPercent: 0,
                 duration: 0.4,
-                alpha: 1, 
+                autoAlpha: 1, 
             },'<')
             .to(left, {
                 xPercent: -200,
-                alpha: 0,
+                autoAlpha: 0,
                 duration: 0.3,
             },'+=3')
             .to(right, {
                 xPercent: 200,
-                alpha: 0,
+                autoAlpha: 0,
                 duration: 0.3,
             },'<');
             
@@ -664,27 +666,27 @@ import { set } from '@vueuse/core'
                 timeLine
                 .fromTo(left, {
                     xPercent: 20,
-                    alpha: 0,
+                    autoAlpha: 0,
                 },{
                     xPercent: 0,
                     duration: 0.4,
-                    alpha: 1, 
+                    autoAlpha: 1, 
                 }).fromTo(right, {
                     xPercent: -20,
-                    alpha: 0,
+                    autoAlpha: 0,
                 },{
                     xPercent: 0,
                     duration: 0.4,
-                    alpha: 1, 
+                    autoAlpha: 1, 
                 },'<')
                 .to(left, {
                     xPercent: -200,
-                    alpha: 0,
+                    autoAlpha: 0,
                     duration: 0.3,
                 },'+=3')
                 .to(right, {
                     xPercent: 200,
-                    alpha: 0,
+                    autoAlpha: 0,
                     duration: 0.3,
                 },'<');
 
@@ -705,27 +707,27 @@ import { set } from '@vueuse/core'
                 timeLine
                 .fromTo(left, {
                     xPercent: 20,
-                    alpha: 0,
+                    autoAlpha: 0,
                 },{
                     xPercent: 0,
                     duration: 0.4,
-                    alpha: 1, 
+                    autoAlpha: 1, 
                 }).fromTo(right, {
                     xPercent: -20,
-                    alpha: 0,
+                    autoAlpha: 0,
                 },{
                     xPercent: 0,
                     duration: 0.4,
-                    alpha: 1, 
+                    autoAlpha: 1, 
                 },'<')
                 .to(left, {
                     xPercent: -200,
-                    alpha: 0,
+                    autoAlpha: 0,
                     duration: 0.3,
                 },'+=3')
                 .to(right, {
                     xPercent: 200,
-                    alpha: 0,
+                    autoAlpha: 0,
                     duration: 0.3,
                 },'<');
 
@@ -764,27 +766,27 @@ import { set } from '@vueuse/core'
                 timeLine
                 .fromTo(left, {
                     xPercent: -20,
-                    alpha: 0,
+                    autoAlpha: 0,
                 },{
                     xPercent: 0,
                     duration: 0.4,
-                    alpha: 1, 
+                    autoAlpha: 1, 
                 }).fromTo(right, {
                     xPercent: 20,
-                    alpha: 0,
+                    autoAlpha: 0,
                 },{
                     xPercent: 0,
                     duration: 0.4,
-                    alpha: 1, 
+                    autoAlpha: 1, 
                 },'<')
                 .to(left, {
                     xPercent: 100,
-                    alpha: 0,
+                    autoAlpha: 0,
                     duration: 0.3,
                 },'+=3')
                 .to(right, {
                     xPercent: -100,
-                    alpha: 0,
+                    autoAlpha: 0,
                     duration: 0.3,
                 },'<');
 
@@ -849,39 +851,49 @@ import { set } from '@vueuse/core'
         const boxItems = gsap.utils.toArray('.scroll-box .box-item span') as HTMLElement[];
 
         boxItems.forEach((el, idx) => {
-            const originX = el.style.transform.replace('translateX(', '').replace('vw)', '') as unknown as number;
-            // console.log(originX);
-            el.style.transform = 'translateX(0)';
-            // el.style.opacity = '0';
+            const posX = [-40,40];
+            const posY = [20];
+
+            el.style.transform = `translate(${posX[idx % 2]}vw, ${posY[0]}vw)`;
+            el.style.opacity = '0';
 
             gsap.to(el, {
                 scrollTrigger: {
                     trigger: el,
                     start: 'top 80%',
-                    end: 'bottom 70%',
-                    scrub: 0.5,
-                    // markers: {
-                    //     startColor: 'red',
-                    //     endColor: 'blue',
-                    //     fontSize: '16px',
-                    //     indent: 1 + idx * 10   // i 에 따라 점차 우측으로 밀어서 겹침 방지
-                    // },
+                    end: '30% 70%',
+                    scrub: 1,
+                    markers: {
+                        startColor: 'red',
+                        endColor: 'blue',
+                        fontSize: '16px',
+                        indent: 1 + idx * 10   // i 에 따라 점차 우측으로 밀어서 겹침 방지
+                    },
                     onUpdate(self){
-                        el.style.opacity = String(self.progress);
-                        el.style.transition = 'transform 1s';
-                        el.style.transform = `translateX(${(self.progress) * originX}vw) rotateX(${self.progress * 360}deg)`;
+                        const p = self.progress;
+                        el.style.transition = 'transform 0.6s';
+                        el.style.opacity = String(p);
+                        
+                        if(self.progress < 0.5) {
+                            const intermediateX = posX[idx % 2] * (1 - (p * 2)); // 0.5까지는 posX ~ 0 사이
+                            el.style.transform = `translate(${intermediateX}vw, ${posY[0]}vw)`;
+                        } else {
+                            const intermediateY = posY[0] * ((1 - p) * 2); // 0.5 이후는 posY ~ 0 사이
+                            el.style.transform = `translate(0vw, ${intermediateY}vw)`;
+                        }
                     },
                 },
                 duration: 0.5,
                 ease: 'power1.out',
             });
 
+            // const originX = el.style.transform.replace('translateX(', '').replace('vw)', '') as unknown as number;
             // gsap.fromTo(el,{
-            //     opacity:0,
+            //     autoAlpha:0,
             //     x:0,
             // },
             // {
-            //     opacity:1,
+            //     autoAlpha:1,
             //     duration: 0.5,
             //     ease: 'power1.out',
             //     x: `${originX}vw`,
@@ -975,13 +987,49 @@ import { set } from '@vueuse/core'
         });
     }
 
+    // 디버그: 가로스크롤 유발 요소 찾기
+    const findHorizontalScrollElements = (limit: number | null = 30) => {
+        const vw = document.documentElement.clientWidth;
+        const all = Array.from(document.querySelectorAll('*'))
+            .map(el => ({ el, scrollW: el.scrollWidth, clientW: el.clientWidth, rect: el.getBoundingClientRect() }))
+            .filter(o => o.scrollW > vw || (o.rect && (o.rect.left < 0 || o.rect.right > vw)))
+            .map(o => ({ tag: o.el.tagName, id: o.el.id || null, cls: o.el.className || null, scrollW: o.scrollW, clientW: o.clientW, left: o.rect.left.toFixed(1), right: o.rect.right.toFixed(1) }));
+
+        console.log(`total hits: ${all.length}`);
+        const hits = (limit && limit > 0) ? all.slice(0, limit) : all;
+        console.table(hits);
+        return hits;
+    };
+
+    const isScrollable = ()=> {
+        const candidates = [
+            window,
+            ...Array.from(document.querySelectorAll('*')).filter(el => {
+                const s = getComputedStyle(el);
+                return /auto|scroll/.test(s.overflowY + s.overflowX);
+            })
+        ];
+
+        candidates.forEach(el => {
+            const target = el === window ? window : el;
+            target.addEventListener('scroll', (e) => {
+                console.log('scroll on:', el === window ? 'window' : el, e);
+            }, { passive: true, capture: true });
+        });
+    };
 
     onMounted(() => {
-        // layout overflow unset으로 window 스크롤 활성화
-        const layout = document.querySelector('#layout') as HTMLElement;
-        if (layout) {
-            layout.style.overflow = 'unset';
-        }
+        try {
+            const layout = document.getElementById('layout');
+            if (layout) {
+                _prevLayoutOverflow = layout.style.overflow || '';
+                try { layout.style.overflow = 'unset'; } catch(e){}
+            }
+
+            // findHorizontalScrollElements();
+            // isScrollable();
+
+        } catch (e) {}
 
         itemContainer = document.querySelectorAll('[class^="item-container"]') as NodeListOf<Element>;
         
@@ -989,7 +1037,7 @@ import { set } from '@vueuse/core'
         scrollBoxAnimation();
         x_scrollAnimation();
         parallaxSlide();
-    })
+    });
 
     onUnmounted(() => {
         isRunning.value = false;
@@ -1011,22 +1059,24 @@ import { set } from '@vueuse/core'
             clearInterval(randomBoxIntervalId);
             randomBoxIntervalId = null;
         }
-        
-        // layout overflow 원복
-        const layout = document.querySelector('#layout') as HTMLElement;
-        if (layout) {
-            layout.style.overflow = '';
-        }
+
+        try {
+            if (_prevLayoutOverflow !== null) {
+                const layout = document.getElementById('layout');
+                if (layout) try { layout.style.overflow = _prevLayoutOverflow || ''; } catch(e){}
+                _prevLayoutOverflow = null;
+            }
+        } catch (e) {}
     })
 </script>
 
 <style scoped lang="scss">
     :global(#gnb .menu) {
-        @apply h-0;
+        @apply h-0 overflow-hidden;;
     }
 
     :global(#gnb .menu ul) {
-        @apply sr-only;
+        @apply sr-only whitespace-nowrap;
     }
 
     :global(.ui-list ul li:has(.--wide)) {
@@ -1034,7 +1084,7 @@ import { set } from '@vueuse/core'
     }
 
     :global(.ui-list ul li:has(.--full)) {
-        @apply h-[calc(var(--vh,1px)*100)];
+        @apply min-h-[150vh];
     }
 
     [class^=item-container] {
@@ -1201,10 +1251,14 @@ import { set } from '@vueuse/core'
                 min-width:calc(100% + 5rem);
 
                 .parallax-slide {
-                    @apply w-full h-full relative overflow-hidden;
+                    @apply w-full h-full relative overflow-hidden max-w-full;
+
+                    .swiper-wrapper {
+                        @apply max-w-full box-border
+                    }
 
                     .swiper-slide {
-                        @apply w-full h-full relative flex items-center justify-center overflow-hidden;
+                        @apply w-full h-full relative flex items-center justify-center overflow-hidden border-0 !min-w-0;
                         
                         .slide-bg {
                             @apply absolute top-0 left-0 w-full h-full bg-center bg-cover flex items-center justify-center text-white text-[2.2rem];
@@ -1223,12 +1277,12 @@ import { set } from '@vueuse/core'
                 @apply flex w-full h-full items-center justify-center;
 
                 .scroll-box {
-                    @apply flex w-full h-auto items-center flex-wrap;
+                    @apply flex w-full h-auto items-center flex-wrap gap-[6rem];
                     counter-reset: counter-box;
 
                     .box-item {
                         perspective: 400px;
-                        @apply flex w-[50%] h-full justify-start;
+                        @apply flex w-[calc(50%-3rem)] h-full justify-center;
                     }
 
                     span {
@@ -1238,7 +1292,7 @@ import { set } from '@vueuse/core'
 
                         &:before {
                             @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-[1.6rem];
-                            content:counter(counter-box, decimal-leading-zero);
+                            // content:counter(counter-box, decimal-leading-zero);
                         }
                     }
                 }

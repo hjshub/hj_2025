@@ -199,45 +199,45 @@ const introMotion = () => {
 
   scene1
   .fromTo('.intro-1 .step-1', {
-    alpha:0,
+    autoAlpha:0,
     xPercent: -500,
-    duration:0.4,
   }, {
-    alpha:1,
+    autoAlpha:1,
     xPercent:0,
     ease: 'expo.in',
+    duration: 0.4,
   }).fromTo('.intro-1 .step-1', {
     yPercent: 50,
     rotateX:90,
     scale:2,
-    duration:1,
   }, {
     rotateX:0,
     scale:1,
+    duration: 1,
   }).fromTo('.intro-frame span:nth-of-type(1)', {
     right:'100%',
-    duration:0.4,
   },{
     right:0,
-    ease: 'expo.in'
+    ease: 'expo.in',
+    duration: 0.4
   }, '>').fromTo('.intro-frame span:nth-of-type(2)', {
     bottom:'100%',
-    duration:0.4,
   },{
     bottom:0,
-    ease: 'expo.in'
+    ease: 'expo.in',
+    duration: 0.4
   }, '<').fromTo('.intro-frame span:nth-of-type(3)', {
     left:'100%',
-    duration:0.4,
   },{
     left:0,
-    ease: 'expo.in'
+    ease: 'expo.in',
+    duration: 0.4
   }, '<').fromTo('.intro-frame span:nth-of-type(4)', {
     top:'100%',
-    duration:0.4,
   },{
     top:0,
     ease: 'expo.in',
+    duration: 0.4,
   }, '<')
   .to('.intro-1 .step-1', {
     yPercent:0,
@@ -245,10 +245,10 @@ const introMotion = () => {
     duration:1
   }, '>')
   .fromTo('.intro-1 .step-2 > *', {
-    alpha: 0,
+    autoAlpha: 0,
     yPercent: 50,
   },{
-    alpha: 1,
+    autoAlpha: 1,
     yPercent: 0,
     ease: 'expo.out',
     duration:0.02,
@@ -263,12 +263,12 @@ const introMotion = () => {
   
   scene2
   .to('.intro-1', {
-    alpha: 0,
+    autoAlpha: 0,
     duration: 1,
     scale: 0.5,
   }, '+=1')
   .to('.intro-2', {
-    alpha: 1,
+    autoAlpha: 1,
     duration: 1,
     scale: 1,
     onComplete(){
@@ -305,36 +305,36 @@ const introMotion = () => {
 
   scene3
   .fromTo('.intro-3 > *', {
-    alpha:0,
+    autoAlpha:0,
     xPercent:200,
     rotateX: 90
   },{
-    alpha:1,
+    autoAlpha:1,
     xPercent:0,
     rotateX: 0,
     stagger: 0.1,
     duration: 0.2
   })
   .to('.intro-3 > *', {
-    alpha:0,
+    autoAlpha:0,
     xPercent:-200,
     rotateX: 90,
     duration: 0.2,
     stagger: 0.1
   }, '+=5')
   .fromTo('.intro-4 > *', {
-    alpha:0,
+    autoAlpha:0,
     xPercent:-200,
     rotateX: 90
   },{
-    alpha:1,
+    autoAlpha:1,
     xPercent:0,
     stagger: 0.1,
     duration: 0.2,
     rotateX: 0
   },'<')
   .to('.intro-4 > *', {
-    alpha:0,
+    autoAlpha:0,
     xPercent:200,
     rotateX: 90,
     duration: 0.2,
@@ -347,11 +347,11 @@ const introMotion = () => {
   
   scene4
   .fromTo(panels, {
-      alpha:0,
+      autoAlpha:0,
       xPercent:200,
       rotateX: 90,
     },{
-      alpha:1,
+      autoAlpha:1,
       xPercent:0,
       stagger: 0.1,
       rotateX: 0,
@@ -392,7 +392,7 @@ const introMotion = () => {
       }
     }, '>')
   .to(panels, {
-    alpha:0,
+    autoAlpha:0,
     xPercent:-200,
     rotateX: 90,
     duration: 0.2,
@@ -401,11 +401,11 @@ const introMotion = () => {
 
   scene5
   .fromTo('.intro-6 .contact > span', {
-    alpha:0,
+    autoAlpha:0,
     xPercent:-200,
     rotateX: 90,
   },{
-    alpha:1,
+    autoAlpha:1,
     xPercent:0,
     duration: 0.2,
     stagger: 0.1,
