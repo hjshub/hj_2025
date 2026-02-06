@@ -74,7 +74,22 @@
                 </div>
             </template>
         </UiItem>
-        <div class="content-end">
+
+        <div class="pin--animation">
+            <div class="--top">
+                <h4>title</h4>
+                <span>description</span>
+            </div>
+            <div class="--bg">
+                <div class="--top">
+                    <h4>title</h4>
+                    <span>description</span>
+                </div>
+                <span class="sr-only">clip-bg</span>
+            </div>
+        </div>
+        
+        <div class="horizontal--scroll">
             <div class="x-scrollWrapper">
                 <span v-for="(item, index) in textArray" :key="index">
                     <b>{{ item }}</b>
@@ -937,7 +952,7 @@ import { set } from '@vueuse/core'
         const textElements = gsap.utils.toArray('.x-scrollWrapper span b') as HTMLElement[];
 
         ScrollTrigger.create({
-            trigger: '.content-end',
+            trigger: '.horizontal--scroll',
             pin: true,
             scrub: 3,
             animation: _timeline,
@@ -989,6 +1004,85 @@ import { set } from '@vueuse/core'
         });
     }
 
+
+    const pinAnimation = () => {
+        const pinElement = document.querySelector('.pin--animation') as HTMLElement;
+        const topElement = document.querySelectorAll('.--top') as NodeListOf<HTMLElement>;
+        const text = gsap.utils.toArray(topElement[0].querySelectorAll('*')) as HTMLElement[];
+        if (!pinElement) return;
+
+        const bg = pinElement.querySelector('.--bg') as HTMLElement;
+        const insetDefaultArray: number[] = [0.5, 0.3, 0.4, 0.3];
+        const insetZeroArray: number[] = Array.from({ length: insetDefaultArray.length }, () => 0);
+        const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+        const setInset = (arr: number[]) => {
+            const [t, r, b, l] = arr;
+            bg.style.clipPath = `inset(${t * 100}% ${r * 100}% ${b * 100}% ${l * 100}% round ${t*10}rem)`;
+        };
+
+        setInset(insetDefaultArray);
+
+        gsap.fromTo(text, {
+            autoAlpha:0,
+            yPercent:20,
+        },{
+            scrollTrigger: {
+                trigger: topElement[0],
+                start: 'top 60%',
+                end: '50% 50%',
+                scrub: true,
+                markers: true,
+            },
+            autoAlpha:1,
+            yPercent:0,
+            duration:0.4,
+            stagger:0.5,
+        });
+
+        gsap.to(pinElement, {
+            scrollTrigger: {
+                trigger: pinElement,
+                start: 'top top',
+                end: 'bottom 80%',
+                pin: true,
+                scrub: true,
+                onUpdate: (self) => {
+                    const p = self.progress;
+                    if (p < 0 || p > 1) return;
+
+                    const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
+                    const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
+                    setInset(insetUpdateArray);
+                },
+                onLeave: () => setInset(insetZeroArray),
+                // onLeaveBack: () => setInset(insetDefaultArray),
+                // onEnterBack: () => setInset(insetDefaultArray),
+                // markers: true,
+            }
+        });
+
+        // ScrollTrigger.create({
+        //     trigger: pinElement,
+        //     start: 'top top',
+        //     end: 'bottom 80%',
+        //     pin: true,
+        //     scrub: true,
+        //     // markers:true,
+        //     onUpdate: (self) => {
+        //         const p = self.progress;
+        //         if (p < 0 || p > 1) return;
+
+        //         const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
+        //         const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
+        //         setInset(insetUpdateArray);
+        //     },
+        //     onLeave: () => setInset(insetZeroArray),
+        //     // onLeaveBack: () => setInset(insetDefaultArray),
+        //     // onEnterBack: () => setInset(insetDefaultArray),
+        //     // markers: true,
+        // });
+    }
+
     // 디버그: 가로스크롤 유발 요소 찾기
     const findHorizontalScrollElements = (limit: number | null = 30) => {
         const vw = document.documentElement.clientWidth;
@@ -1037,8 +1131,9 @@ import { set } from '@vueuse/core'
         
         roundedTextAnimation();
         scrollBoxAnimation();
-        x_scrollAnimation();
         parallaxSlide();
+        pinAnimation();
+        x_scrollAnimation();
     });
 
     onUnmounted(() => {
@@ -1079,6 +1174,10 @@ import { set } from '@vueuse/core'
 
     :global(#gnb .menu ul) {
         @apply sr-only whitespace-nowrap;
+    }
+
+    :global(.ui-list) {
+        @apply overflow-hidden;
     }
 
     :global(.ui-list ul li:has(.--wide)) {
@@ -1306,7 +1405,7 @@ import { set } from '@vueuse/core'
         }
     }
 
-    .content-end {
+    .horizontal--scroll {
         @apply flex w-[100vw] items-center overflow-hidden;
         height:100vh;
         will-change: transform;
@@ -1341,6 +1440,37 @@ import { set } from '@vueuse/core'
                 &:nth-child(4) {
                     background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
                 }
+            }
+        }
+    }
+
+    .pin--animation {
+        @apply w-full h-[110svh] relative !p-0;
+
+        .--top {
+            @apply w-full flex flex-col items-center justify-center text-[8rem];
+
+            * {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                transform:translateY(20%);
+            }
+
+            h4 {
+                @apply text-[10rem] uppercase font-bold;
+            }
+        }
+
+        .--bg {
+            @apply absolute top-0 left-0 w-full h-full;
+            background: linear-gradient(135deg, #667eea 30%, #764ba2 100%);
+            
+            .--top * {
+                -webkit-background-clip: none;
+                background-clip: none;
+                -webkit-text-fill-color: white;
             }
         }
     }
