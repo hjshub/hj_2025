@@ -1031,7 +1031,7 @@ import { set } from '@vueuse/core'
                 start: 'top 60%',
                 end: '50% 50%',
                 scrub: true,
-                markers: true,
+                // markers: true,
             },
             autoAlpha:1,
             yPercent:0,
