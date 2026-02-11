@@ -1028,8 +1028,8 @@ import { set } from '@vueuse/core'
         },{
             scrollTrigger: {
                 trigger: topElement[0],
-                start: 'top 60%',
-                end: '50% 50%',
+                start: 'top 80%',
+                end: 'bottom 70%',
                 scrub: true,
                 // markers: true,
             },
@@ -1039,25 +1039,56 @@ import { set } from '@vueuse/core'
             stagger:0.5,
         });
 
-        gsap.to(pinElement, {
+
+        // self progress + css transition 조합
+        // self progress 는 단순 스크롤 진행률, scrub 사용해도 스무드 적용이 안됨
+        // gsap.to(pinElement, {
+        //     scrollTrigger: {
+        //         trigger: pinElement,
+        //         start: 'top top',
+        //         end: 'bottom 80%',
+        //         pin: true,
+        //         scrub: false,
+        //         onUpdate: (self) => {
+        //             const p = self.progress;
+        //             if (p < 0 || p > 1) return;
+
+        //             const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
+        //             const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
+        //             setInset(insetUpdateArray);
+        //         },
+        //         onLeave: () => setInset(insetZeroArray),
+        //         // markers: true,
+        //     }
+        // });
+
+        // scrubProxy + scrub 조합
+        // target으로 임의 객체 지정 -> 스크롤 진행 시 스크롤 진행률 (0 - 1) 이 해당 객체에 담김
+        // onUpdate 콜백을 scrollTrigger가 아닌 tween 자체에서 호출 해야함
+
+        const scrubProxy = {p : 0};
+
+        gsap.to(scrubProxy, {
+            p: 1,
+            ease: 'none',
             scrollTrigger: {
                 trigger: pinElement,
                 start: 'top top',
                 end: 'bottom 80%',
                 pin: true,
-                scrub: true,
-                onUpdate: (self) => {
-                    const p = self.progress;
-                    if (p < 0 || p > 1) return;
-
-                    const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
-                    const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
-                    setInset(insetUpdateArray);
-                },
+                scrub: 0.8,
                 onLeave: () => setInset(insetZeroArray),
                 // onLeaveBack: () => setInset(insetDefaultArray),
                 // onEnterBack: () => setInset(insetDefaultArray),
                 // markers: true,
+            },
+            onUpdate: () => {
+                const p = scrubProxy.p;
+                if (p < 0 || p > 1) return;
+
+                const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
+                const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
+                setInset(insetUpdateArray);
             }
         });
 
@@ -1466,6 +1497,10 @@ import { set } from '@vueuse/core'
         .--bg {
             @apply absolute top-0 left-0 w-full h-full;
             background: linear-gradient(135deg, #667eea 30%, #764ba2 100%);
+            will-change: clip-path;
+            // transition-property: clip-path;
+            // transition-duration:0.8s;
+            // transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
             
             .--top * {
                 -webkit-background-clip: none;
