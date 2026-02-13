@@ -49,6 +49,11 @@ const router = createRouter({
       name: 'ui_lib',
       component: () => import('../views/UiView.vue')
     },
+    {
+      path: '/sample',
+      name: 'sample',
+      component: () => import('../views/SampleView.vue')
+    },
   ]
 })
 

@@ -53,8 +53,8 @@ const menuItems = computed(() => [
 // throttledScroll을 변수로 선언
 const throttledScroll = () => {
   // pin 활성 중에는 실행 차단
-  const isPinActive = document.querySelector('.pin-spacer');
-  if (isPinActive) return;
+  // const isPinActive = document.querySelector('.pin-spacer');
+  // if (isPinActive) return;
   
   if (scrollTimeout !== null) return;
   scrollTimeout = window.setTimeout(() => {

@@ -11,15 +11,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import CommonFunction from '../assets/ts/common'
 
 // const props = defineProps<{count: number}>()
 // const count = props.count || 0;
 
 const props = withDefaults(defineProps<{ items?: Array<{title: string}> }>(), { items: [] })
 const items = props.items
-
-const common = CommonFunction();
 
 onMounted(() => {
 })

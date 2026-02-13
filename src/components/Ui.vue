@@ -74,20 +74,6 @@
                 </div>
             </template>
         </UiItem>
-
-        <div class="pin--animation">
-            <div class="--top">
-                <h4>title</h4>
-                <span>description</span>
-            </div>
-            <div class="--bg">
-                <div class="--top">
-                    <h4>title</h4>
-                    <span>description</span>
-                </div>
-                <span class="sr-only">clip-bg</span>
-            </div>
-        </div>
         
         <div class="horizontal--scroll">
             <div class="x-scrollWrapper">
@@ -110,14 +96,12 @@
     import 'swiper/css';
     import 'swiper/css/navigation';
     import 'swiper/css/pagination';
-import { set } from '@vueuse/core'
 
     gsap.registerPlugin(ScrollTrigger);
 
     const common = CommonFunction();
 
     let itemContainer: NodeListOf<Element> | null = null;
-    let _prevOverflows: Array<{el: HTMLElement, overflowX: string}> | null = null;
     let _prevLayoutOverflow: string | null = null;
 
     const items = [
@@ -934,19 +918,16 @@ import { set } from '@vueuse/core'
 
 
     // =========================  최하단 scrollTrigger pin 가로스크롤 (layout scroll event remove (header.vue), overflow unset & window scroll 사용) =========================
-    
     const x_scrollAnimation = () => {
         const wrapper = document.querySelector('.x-scrollWrapper') as HTMLElement;
         const _span = gsap.utils.toArray('.x-scrollWrapper span') as HTMLElement[];
         
         if (!wrapper || _span.length === 0) return;
-        
+
         const _timeline = gsap.timeline();
 
         // 실제 스크롤 거리 = 전체 너비 - 보이는 너비
         const scrollDistance = wrapper.scrollWidth - _span[0].offsetWidth;
-
-        // console.log(wrapper.scrollWidth, _span[0].offsetWidth, scrollDistance);
 
         // 각 span의 텍스트 요소 선택
         const textElements = gsap.utils.toArray('.x-scrollWrapper span b') as HTMLElement[];
@@ -958,6 +939,8 @@ import { set } from '@vueuse/core'
             animation: _timeline,
             start: 'top top',
             end: () => `+=${scrollDistance}`,
+            // refresh 때 end/start 등 재계산되도록 강제
+            invalidateOnRefresh: true,
             onUpdate: (self) => {
                 // 각 span별로 개별 parallax 효과
                 textElements.forEach((text, index) => {
@@ -1002,116 +985,6 @@ import { set } from '@vueuse/core'
             ease: 'none',
             duration: 1
         });
-    }
-
-
-    const pinAnimation = () => {
-        const pinElement = document.querySelector('.pin--animation') as HTMLElement;
-        const topElement = document.querySelectorAll('.--top') as NodeListOf<HTMLElement>;
-        const text = gsap.utils.toArray(topElement[0].querySelectorAll('*')) as HTMLElement[];
-        if (!pinElement) return;
-
-        const bg = pinElement.querySelector('.--bg') as HTMLElement;
-        const insetDefaultArray: number[] = [0.5, 0.3, 0.4, 0.3];
-        const insetZeroArray: number[] = Array.from({ length: insetDefaultArray.length }, () => 0);
-        const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-        const setInset = (arr: number[]) => {
-            const [t, r, b, l] = arr;
-            bg.style.clipPath = `inset(${t * 100}% ${r * 100}% ${b * 100}% ${l * 100}% round ${t*10}rem)`;
-        };
-
-        setInset(insetDefaultArray);
-
-        gsap.fromTo(text, {
-            autoAlpha:0,
-            yPercent:20,
-        },{
-            scrollTrigger: {
-                trigger: topElement[0],
-                start: 'top 80%',
-                end: 'bottom 70%',
-                scrub: true,
-                // markers: true,
-            },
-            autoAlpha:1,
-            yPercent:0,
-            duration:0.4,
-            stagger:0.5,
-        });
-
-
-        // self progress + css transition 조합
-        // self progress 는 단순 스크롤 진행률, scrub 사용해도 스무드 적용이 안됨
-        // gsap.to(pinElement, {
-        //     scrollTrigger: {
-        //         trigger: pinElement,
-        //         start: 'top top',
-        //         end: 'bottom 80%',
-        //         pin: true,
-        //         scrub: false,
-        //         onUpdate: (self) => {
-        //             const p = self.progress;
-        //             if (p < 0 || p > 1) return;
-
-        //             const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
-        //             const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
-        //             setInset(insetUpdateArray);
-        //         },
-        //         onLeave: () => setInset(insetZeroArray),
-        //         // markers: true,
-        //     }
-        // });
-
-        // scrubProxy + scrub 조합
-        // target으로 임의 객체 지정 -> 스크롤 진행 시 스크롤 진행률 (0 - 1) 이 해당 객체에 담김
-        // onUpdate 콜백을 scrollTrigger가 아닌 tween 자체에서 호출 해야함
-
-        const scrubProxy = {p : 0};
-
-        gsap.to(scrubProxy, {
-            p: 1,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: pinElement,
-                start: 'top top',
-                end: 'bottom 80%',
-                pin: true,
-                scrub: 0.8,
-                onLeave: () => setInset(insetZeroArray),
-                // onLeaveBack: () => setInset(insetDefaultArray),
-                // onEnterBack: () => setInset(insetDefaultArray),
-                // markers: true,
-            },
-            onUpdate: () => {
-                const p = scrubProxy.p;
-                if (p < 0 || p > 1) return;
-
-                const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
-                const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
-                setInset(insetUpdateArray);
-            }
-        });
-
-        // ScrollTrigger.create({
-        //     trigger: pinElement,
-        //     start: 'top top',
-        //     end: 'bottom 80%',
-        //     pin: true,
-        //     scrub: true,
-        //     // markers:true,
-        //     onUpdate: (self) => {
-        //         const p = self.progress;
-        //         if (p < 0 || p > 1) return;
-
-        //         const localP = clamp01(p / 0.8); // 0 ~ 1 (0 ~ 0.8 구간 보간)
-        //         const insetUpdateArray = insetDefaultArray.map(val => val * (1 - localP));
-        //         setInset(insetUpdateArray);
-        //     },
-        //     onLeave: () => setInset(insetZeroArray),
-        //     // onLeaveBack: () => setInset(insetDefaultArray),
-        //     // onEnterBack: () => setInset(insetDefaultArray),
-        //     // markers: true,
-        // });
     }
 
     // 디버그: 가로스크롤 유발 요소 찾기
@@ -1163,7 +1036,6 @@ import { set } from '@vueuse/core'
         roundedTextAnimation();
         scrollBoxAnimation();
         parallaxSlide();
-        pinAnimation();
         x_scrollAnimation();
     });
 
@@ -1471,41 +1343,6 @@ import { set } from '@vueuse/core'
                 &:nth-child(4) {
                     background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
                 }
-            }
-        }
-    }
-
-    .pin--animation {
-        @apply w-full h-[110svh] relative !p-0;
-
-        .--top {
-            @apply w-full flex flex-col items-center justify-center text-[8rem];
-
-            * {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                transform:translateY(20%);
-            }
-
-            h4 {
-                @apply text-[10rem] uppercase font-bold;
-            }
-        }
-
-        .--bg {
-            @apply absolute top-0 left-0 w-full h-full;
-            background: linear-gradient(135deg, #667eea 30%, #764ba2 100%);
-            will-change: clip-path;
-            // transition-property: clip-path;
-            // transition-duration:0.8s;
-            // transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-            
-            .--top * {
-                -webkit-background-clip: none;
-                background-clip: none;
-                -webkit-text-fill-color: white;
             }
         }
     }
