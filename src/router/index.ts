@@ -40,6 +40,11 @@ const router = createRouter({
       component: () => import('../views/Portfolio3View.vue')
     },
     {
+      path: '/portfolio4',
+      name: 'portfolio4',
+      component: () => import('../views/Portfolio4View.vue')
+    },
+    {
       path: '/guide',
       name: 'guide',
       component: () => import('../views/GuideView.vue')
