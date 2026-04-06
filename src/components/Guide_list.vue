@@ -27,6 +27,8 @@
 
 <style scoped lang="scss">
     section {
+        min-height: calc(var(--vh, 1vh) * 100);
+        
         @apply relative;
         &:first-of-type {
             @apply bg-gray-100;

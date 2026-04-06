@@ -22,6 +22,10 @@
 
   .menu {
     @apply absolute top-0 z-[999] w-full h-[5rem] bg-white border-b-[3px] border-solid border-[rgba(162,162,162,0.1)] dark:border-[rgba(255,255,255,0.2)];
+    transition-property: transform;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    will-change: transform;
 
     ul {
       @apply justify-self-end w-[40%] h-[5rem];
@@ -46,6 +50,21 @@
           &:before {
             @apply block w-[1px] h-[50%] absolute top-1/2 left-0 -translate-y-1/2 bg-[rgba(162,162,162,0.1)] dark:bg-[rgba(255,255,255,0.2)];
             content:'';
+          }
+        }
+      }
+    }
+
+    @at-root {
+      #layout {
+        &.up {
+          .menu {
+            transform:translateY(0);
+          }
+        }
+        &.down {
+          .menu {
+            transform:translateY(calc(3px - 100%));
           }
         }
       }

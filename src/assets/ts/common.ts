@@ -37,6 +37,7 @@ interface CommonFunctionReturn {
   init: () => void;
   isMob: () => boolean;
   countYear: (date: string, trg: string | HTMLElement, type?: string) => void;
+  scrollDelta: () => any;
   scrollReset: () => void;
   setGnb: () => void;
   scrollGage: () => number;
@@ -429,6 +430,7 @@ const ThemeTransition = {
 
 export default function CommonFunction(): CommonFunctionReturn {
   const isMob = () => window.innerWidth <= 821;
+  const delay = (ms: number) => new Promise((resolve) => { setTimeout(resolve, ms); });
   const setGnb = () => {
     const gnb : HTMLElement | null = document.getElementById('gnb');
     const menu : HTMLElement | null = document.querySelector('.menu');
@@ -437,37 +439,30 @@ export default function CommonFunction(): CommonFunctionReturn {
 
     if(layout.scrollTop >= gnb?.clientHeight){
       menu.style.position = 'fixed';
+
       if(!gb.isScroll){
         gb.isScroll = true;
-        if(deltaY < 0){
-          gsap.set(menu, {
-            yPercent:0,
-            y:0,
-            onComplete: () => {
-              gb.isScroll = false;
-            }
-          })
-        }else {
-        gsap.set(menu, {
-            yPercent:-100,
-            y:3,
-            onComplete: () => {
-              gb.isScroll = false;
-            }
-          })
-        }
+
+        (async () => {
+          if(deltaY < 0){
+              layout?.classList.remove('down');
+              layout?.classList.add('up');
+          }else {
+              layout?.classList.remove('up');
+              layout?.classList.add('down');
+          }
+
+          await delay(100);
+          gb.isScroll  = false;
+        })();
       }
     }else {
         menu.style.position = 'absolute';
-        gsap.set(menu, {
-          yPercent:0,
-          y:0
-        })
+        layout?.classList.remove('up', 'down');
     }
   };
   const scrollDelta = () => {
-    // const currentScrollTop = window.scrollY;
-    const layout : HTMLElement | null = document.querySelector('#layout');
+    const layout : HTMLElement | null = document.querySelector('#layout') ?? window;
     const currentScrollTop = layout.scrollTop;
     const deltaY = currentScrollTop - gb.lastScrollTop;
     gb.lastScrollTop = currentScrollTop;
@@ -1143,6 +1138,7 @@ export default function CommonFunction(): CommonFunctionReturn {
   return {
     init,
     isMob,
+    scrollDelta,
     setGnb,
     countYear,
     headerMotion,
